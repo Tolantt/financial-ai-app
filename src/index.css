@@ -1,0 +1,26 @@
+/* src/index.css（整份复制） */
+@import "tailwindcss";
+
+/* —— 主题背景（深/浅色） —— */
+:root { --bg: #0b1020; --bg-soft: #0f1630; }
+html.dark body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #184f8a33, transparent 60%),
+    radial-gradient(1000px 500px at 90% 0%, #5820a433, transparent 60%),
+    linear-gradient(180deg, var(--bg), var(--bg-soft));
+  color: #e8ecf6;
+}
+html:not(.dark) body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(24,79,138,.15), transparent 60%),
+    radial-gradient(1000px 500px at 90% 0%, rgba(88,32,164,.12), transparent 60%),
+    linear-gradient(180deg, #f6f8ff, #eef2ff);
+  color: #162033;
+}
+
+/* 可访问性 */
+:focus-visible { outline: 2px solid #7cc7ff; outline-offset: 2px; }
+
+/* 滚动条（可选） */
+*::-webkit-scrollbar{ width: 10px; height: 10px }
+*::-webkit-scrollbar-thumb{ background: rgba(140,150,170,.35); border-radius: 8px }
