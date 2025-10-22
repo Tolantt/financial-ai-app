@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # 有些依赖在 IPv6 环境解析慢，强制 IPv4 更稳
+      NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,9 +30,27 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
-        # 如果仓库里有 package-lock.json，npm ci 最快最稳
-        run: npm ci
+      - name: Show versions
+        run: |
+          node -v
+          npm -v
+
+      - name: Install dependencies (prefer lockfile)
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
+
+      - name: Verify project files
+        run: |
+          ls -la
+          test -f postcss.config.js
+          test -f vite.config.js
+          test -f index.html
+          test -d src
 
       - name: Build
         run: npm run build
