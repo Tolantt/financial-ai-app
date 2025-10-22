@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { HashRouter, Routes, Route } from "react-router-dom"
 
 import Header from "./components/Header"
 import Hero from "./components/Hero"
@@ -33,12 +33,11 @@ export default function App() {
         跳到主要内容
       </a>
 
-      <BrowserRouter>
+      <HashRouter>
         <Header />
 
         <main id="main" className="w-[min(1100px,92vw)] mx-auto">
           <Routes>
-            {/* 首页 */}
             <Route
               path="/"
               element={
@@ -88,20 +87,17 @@ export default function App() {
               }
             />
 
-            {/* 新页面：开发中占位 */}
             <Route path="/guide" element={<Guide />} />
             <Route path="/assistant" element={<Assistant />} />
             <Route path="/edu" element={<Education />} />
             <Route path="/quant" element={<Quant />} />
             <Route path="/community" element={<Community />} />
-
-            {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 
         <Footer />
-      </BrowserRouter>
+      </HashRouter>
     </ThemeContext.Provider>
   )
 }
