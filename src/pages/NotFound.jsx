@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { scrollToTop } from "../utils/scrollToTop"
 
 export default function NotFound() {
   return (
@@ -24,6 +25,7 @@ export default function NotFound() {
           data-track="cta"
           data-track-action="click"
           data-track-label="back_home_from_404"
+          onClick={() => scrollToTop({ behavior: "auto" })}
         >
           回到首页
         </Link>

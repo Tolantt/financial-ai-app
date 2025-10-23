@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { NavLink, Link } from "react-router-dom"
 import { ThemeContext } from "../App"
+import { scrollToTop } from "../utils/scrollToTop"
 
 const navs = [
   { to: "/guide", label: "投资攻略" },
@@ -57,7 +58,7 @@ export default function Header() {
   }
 
   const handleHomeNavigation = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    scrollToTop({ behavior: "smooth" })
     setOpen(false)
   }
 
@@ -93,7 +94,7 @@ export default function Header() {
             >
               ∑
             </span>
-            <span className="text-base md:text-lg">金融AI服务平台</span>
+            <span className="text-base md:text-lg">Anxurs</span>
           </Link>
 
           <nav className="hidden items-center gap-1 text-sm font-medium md:flex" aria-label="主导航">
@@ -104,8 +105,8 @@ export default function Header() {
                 className={({ isActive }) =>
                   `relative rounded-full px-4 py-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${
                     isActive
-                      ? "bg-white/25 text-slate-900 shadow-[0_8px_20px_rgba(255,255,255,0.25)] dark:bg-white/10 dark:text-white"
-                      : "text-slate-800/80 hover:bg-white/40 hover:text-slate-900 dark:text-slate-200/80 dark:hover:bg-white/10 dark:hover:text-white"
+                      ? "bg-gradient-to-r from-[#61DAFB] via-[#21A1F1] to-[#1d4ed8] text-white shadow-[0_10px_28px_rgba(33,161,241,0.45)]"
+                      : "text-slate-800/80 hover:bg-white/50 hover:text-slate-900 dark:text-slate-200/80 dark:hover:bg-white/15 dark:hover:text-white"
                   }`
                 }
                 data-track="nav"
@@ -188,8 +189,8 @@ export default function Header() {
                 className={({ isActive }) =>
                   `flex items-center justify-between rounded-xl px-4 py-3 text-base transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 ${
                     isActive
-                      ? "bg-white/40 font-semibold text-slate-900 shadow-[0_10px_32px_rgba(255,255,255,0.25)] dark:bg-white/10 dark:text-white"
-                      : "text-slate-800/85 hover:bg-white/50 dark:text-slate-200/85 dark:hover:bg-white/10"
+                      ? "bg-gradient-to-r from-[#61DAFB] via-[#21A1F1] to-[#1d4ed8] font-semibold text-white shadow-[0_16px_36px_rgba(33,161,241,0.45)]"
+                      : "text-slate-800/85 hover:bg-white/60 dark:text-slate-200/85 dark:hover:bg-white/15"
                   }`
                 }
                 data-track="nav"
@@ -198,7 +199,7 @@ export default function Header() {
                 onClick={() => setOpen(false)}
               >
                 <span>{item.label}</span>
-                <span aria-hidden="true" className="text-lg opacity-50">
+                <span aria-hidden="true" className="text-lg opacity-60">
                   →
                 </span>
               </NavLink>

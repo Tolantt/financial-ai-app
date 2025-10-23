@@ -18,10 +18,10 @@ export default function Hero() {
             智能投研 · 个性服务
           </p>
           <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-            欢迎来到金融AI服务平台
+            欢迎来到 Anxurs
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-slate-700/85 sm:text-lg dark:text-white/80">
-            通过前沿 AI 技术，提供
+            Anxurs 通过前沿 AI 技术，提供
             <strong className="mx-1 font-semibold text-slate-900 dark:text-white"> 金融AI </strong>
             助手、
             <strong className="mx-1 font-semibold text-slate-900 dark:text-white"> 量化策略 </strong>

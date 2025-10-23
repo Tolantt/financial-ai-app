@@ -32,7 +32,7 @@ const symbolGradientByAccent = {
 }
 
 const BOARD_INTRO =
-  "左侧按板块聚合重点资产卡片，选择后右侧 TradingView Supercharts 将实时切换到对应标的，帮助你快速洞悉市场节奏。"
+  "按板块聚合指数、热门个股与加密资产，精选卡片与实时图表并排呈现，帮助你在几秒钟内抓住市场节奏。"
 
 const BOARD_CATEGORIES = [
   {
@@ -319,11 +319,17 @@ function ChangeBadge({ value, label, subtle = false, size = "sm" }) {
   )
 }
 
-function Sparkline({ data, isPositive, className = "" }) {
+function Sparkline({ data, isPositive, className }) {
   const gradientId = useId()
+  const resolvedClassName = className ?? "h-12 w-full"
 
   if (!Array.isArray(data) || data.length < 2) {
-    return <div className={`h-12 w-full rounded-full bg-slate-100/70 dark:bg-white/5 ${className}`} aria-hidden="true" />
+    return (
+      <div
+        className={`rounded-full bg-slate-100/70 dark:bg-white/5 ${resolvedClassName}`}
+        aria-hidden="true"
+      />
+    )
   }
 
   const max = Math.max(...data)
@@ -341,12 +347,7 @@ function Sparkline({ data, isPositive, className = "" }) {
   const areaPoints = ["0,100", ...coordinates, "100,100"].join(" ")
 
   return (
-    <svg
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      className={`h-12 w-full ${className}`}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={resolvedClassName} aria-hidden="true">
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={fillStart} />
@@ -457,12 +458,12 @@ export default function TradingViewBoard() {
   return (
     <section
       className="mx-auto w-[min(1180px,92vw)] space-y-6 rounded-[28px] border border-slate-200/60 bg-white/70 px-6 py-10 shadow-[0_24px_60px_rgba(6,10,32,0.38)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5"
-      aria-label="美股交易数据看板"
+      aria-label="市场概况"
       data-track-view="tv_board"
     >
       <div className="flex flex-col gap-3 text-left">
-        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:text-white/50">实时行情</p>
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">美股交易数据看板</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:text-white/50">实时概览</p>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">市场概况</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-slate-600/90 dark:text-white/70">{BOARD_INTRO}</p>
       </div>
 
@@ -502,9 +503,9 @@ export default function TradingViewBoard() {
         id={`tv-board-panel-${activeCategoryData.id}`}
         role="tabpanel"
         aria-labelledby={`tv-board-tab-${activeCategoryData.id}`}
-        className="grid gap-6 lg:grid-cols-[minmax(0,360px)_1fr]"
+        className="grid gap-6 xl:grid-cols-[minmax(0,440px)_minmax(0,1fr)]"
       >
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="relative overflow-hidden rounded-[24px] border border-slate-200/70 bg-white/85 p-5 shadow-[0_16px_40px_rgba(6,10,32,0.16)] backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
             <div className={`pointer-events-none absolute -left-10 top-0 h-32 w-32 ${glowClass} blur-3xl`} aria-hidden="true" />
             <div className={`pointer-events-none absolute -right-6 bottom-0 h-28 w-28 ${glowClass} blur-3xl`} aria-hidden="true" />
@@ -518,14 +519,12 @@ export default function TradingViewBoard() {
               </span>
               <div className="min-w-0 space-y-1">
                 <p className="text-sm font-semibold text-slate-900 dark:text-white">{activeCategoryData.label}</p>
-                <p className="text-xs leading-relaxed text-slate-500 dark:text-white/55">
-                  {activeCategoryData.description}
-                </p>
+                <p className="text-xs leading-relaxed text-slate-500 dark:text-white/55">{activeCategoryData.description}</p>
               </div>
             </div>
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid gap-3 md:grid-cols-2">
             {activeCategoryData.items.map((asset) => {
               const isActiveAsset = asset.id === (activeAsset?.id ?? "")
               const accentRingClass = accentActiveRing[accentKey] ?? accentActiveRing.sky
@@ -535,7 +534,7 @@ export default function TradingViewBoard() {
                   type="button"
                   onClick={() => handleAssetChange(asset.id)}
                   aria-pressed={isActiveAsset}
-                  className={`group relative flex w-full flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/85 px-4 py-4 text-left shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 ${
+                  className={`group relative flex w-full flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/85 px-4 py-3 text-left shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 ${
                     isActiveAsset
                       ? `ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-950 ${accentRingClass} bg-white text-slate-900 dark:bg-white/10 dark:text-white`
                       : "hover:-translate-y-[2px] hover:border-slate-200 dark:hover:border-white/20"
@@ -544,28 +543,30 @@ export default function TradingViewBoard() {
                   data-track-action="click"
                   data-track-label={asset.name}
                 >
-                  <div className="flex items-start gap-3">
-                    <span
-                      className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold text-white shadow-[0_6px_18px_rgba(15,23,42,0.12)] ${
-                        symbolGradientByAccent[accentKey] ?? symbolGradientByAccent.sky
-                      }`}
-                    >
-                      {asset.symbol}
-                    </span>
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-white">{asset.name}</p>
-                        {asset.badge ? (
-                          <span className="inline-flex items-center rounded-full bg-slate-900/5 px-2 py-[1px] text-[11px] font-medium text-slate-500 dark:bg-white/10 dark:text-white/60">
-                            {asset.badge}
-                          </span>
-                        ) : null}
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-start gap-3">
+                      <span
+                        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold text-white shadow-[0_6px_18px_rgba(15,23,42,0.12)] ${
+                          symbolGradientByAccent[accentKey] ?? symbolGradientByAccent.sky
+                        }`}
+                      >
+                        {asset.symbol}
+                      </span>
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{asset.name}</p>
+                          {asset.badge ? (
+                            <span className="inline-flex items-center rounded-full bg-slate-900/5 px-2 py-[1px] text-[11px] font-medium text-slate-500 dark:bg-white/10 dark:text-white/60">
+                              {asset.badge}
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-white/50">{asset.subtitle}</p>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-white/50">{asset.subtitle}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-1 text-right">
+                    <div className="flex flex-col items-end gap-2 text-right">
                       <p className="text-base font-semibold text-slate-900 dark:text-white">{formatPrice(asset.price)}</p>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center justify-end gap-2">
                         <ChangeBadge value={asset.changePercent} label="日" />
                         {typeof asset.postMarketPercent === "number" ? (
                           <ChangeBadge value={asset.postMarketPercent} label="盘后" subtle />
@@ -576,7 +577,7 @@ export default function TradingViewBoard() {
                   <Sparkline
                     data={asset.spark}
                     isPositive={asset.changePercent >= 0}
-                    className="mt-2"
+                    className="h-14 w-full sm:h-16"
                   />
                 </button>
               )
@@ -620,7 +621,7 @@ export default function TradingViewBoard() {
                 </div>
               </div>
             </div>
-            <div className="relative min-h-[320px] flex-1">
+            <div className="relative min-h-[280px] flex-1 xl:min-h-[360px]">
               <div ref={chartContainerRef} className="tradingview-widget-container absolute inset-0" />
             </div>
           </div>
