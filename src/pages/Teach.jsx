@@ -168,7 +168,17 @@ export default function Teach() {
           Learn
         </span>
         <h1 id="teach-page-heading" className="text-3xl font-bold text-slate-900 dark:text-white">
-          金融教学 · 课程中心
+          <span className="relative inline-flex items-center gap-3 overflow-hidden rounded-[28px] px-6 py-3 text-white shadow-[0_18px_44px_rgba(33,161,241,0.35)]">
+            <span className="absolute inset-0 bg-gradient-to-r from-[#1f6feb] via-[#21a1f1] to-[#0ea5e9]" aria-hidden="true" />
+            <span className="absolute inset-0 blur-xl bg-[#1f6feb]/45" aria-hidden="true" />
+            <span
+              aria-hidden="true"
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-white/35 bg-white/15 text-lg"
+            >
+              ✦
+            </span>
+            <span className="relative text-2xl font-semibold tracking-wide">金融教学 · 课程中心</span>
+          </span>
         </h1>
         <p className="max-w-3xl text-base leading-relaxed text-slate-600/90 dark:text-white/70">
           为不同经验层次的投资者准备的分层课程，覆盖从资产配置、估值方法到宏观研究与风险管理的关键主题。选择分类即可筛选对应视频内容。
