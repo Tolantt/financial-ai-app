@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { scrollToTop } from "../utils/scrollToTop"
 
 export default function Quant() {
   return (
@@ -36,6 +37,7 @@ export default function Quant() {
           data-track="cta"
           data-track-action="click"
           data-track-label="back_home_from_quant"
+          onClick={() => scrollToTop({ behavior: "auto" })}
         >
           返回首页
         </Link>

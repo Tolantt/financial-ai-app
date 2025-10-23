@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { scrollToTop } from "../utils/scrollToTop"
 
 export default function Community() {
   return (
@@ -36,6 +37,7 @@ export default function Community() {
           data-track="cta"
           data-track-action="click"
           data-track-label="back_home_from_community"
+          onClick={() => scrollToTop({ behavior: "auto" })}
         >
           返回首页
         </Link>

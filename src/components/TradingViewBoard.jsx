@@ -32,7 +32,7 @@ const symbolGradientByAccent = {
 }
 
 const BOARD_INTRO =
-  "左侧按板块聚合重点资产卡片，选择后右侧 TradingView Supercharts 将实时切换到对应标的，帮助你快速洞悉市场节奏。"
+  "按板块聚合指数、热门个股与加密资产，精选卡片与实时图表并排呈现，帮助你在几秒钟内抓住市场节奏。"
 
 const BOARD_CATEGORIES = [
   {
@@ -457,12 +457,12 @@ export default function TradingViewBoard() {
   return (
     <section
       className="mx-auto w-[min(1180px,92vw)] space-y-6 rounded-[28px] border border-slate-200/60 bg-white/70 px-6 py-10 shadow-[0_24px_60px_rgba(6,10,32,0.38)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5"
-      aria-label="美股交易数据看板"
+      aria-label="市场概况"
       data-track-view="tv_board"
     >
       <div className="flex flex-col gap-3 text-left">
-        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:text-white/50">实时行情</p>
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">美股交易数据看板</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:text-white/50">实时概览</p>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">市场概况</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-slate-600/90 dark:text-white/70">{BOARD_INTRO}</p>
       </div>
 
@@ -502,36 +502,33 @@ export default function TradingViewBoard() {
         id={`tv-board-panel-${activeCategoryData.id}`}
         role="tabpanel"
         aria-labelledby={`tv-board-tab-${activeCategoryData.id}`}
-        className="grid gap-6 lg:grid-cols-[minmax(0,360px)_1fr]"
+        className="grid gap-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,300px)_minmax(0,360px)_minmax(0,1fr)]"
       >
-        <div className="space-y-4">
-          <div className="relative overflow-hidden rounded-[24px] border border-slate-200/70 bg-white/85 p-5 shadow-[0_16px_40px_rgba(6,10,32,0.16)] backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
-            <div className={`pointer-events-none absolute -left-10 top-0 h-32 w-32 ${glowClass} blur-3xl`} aria-hidden="true" />
-            <div className={`pointer-events-none absolute -right-6 bottom-0 h-28 w-28 ${glowClass} blur-3xl`} aria-hidden="true" />
-            <div className="relative flex items-center gap-3">
-              <span
-                className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-semibold text-white shadow-[0_12px_28px_rgba(15,23,42,0.18)] ${
-                  symbolGradientByAccent[accentKey] ?? symbolGradientByAccent.sky
-                }`}
-              >
-                {activeCategoryData.label.slice(0, 2)}
-              </span>
-              <div className="min-w-0 space-y-1">
-                <p className="text-sm font-semibold text-slate-900 dark:text-white">{activeCategoryData.label}</p>
-                <p className="text-xs leading-relaxed text-slate-500 dark:text-white/55">
-                  {activeCategoryData.description}
-                </p>
-              </div>
+        <div className="relative self-start overflow-hidden rounded-[24px] border border-slate-200/70 bg-white/85 p-5 shadow-[0_16px_40px_rgba(6,10,32,0.16)] backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
+          <div className={`pointer-events-none absolute -left-10 top-0 h-32 w-32 ${glowClass} blur-3xl`} aria-hidden="true" />
+          <div className={`pointer-events-none absolute -right-6 bottom-0 h-28 w-28 ${glowClass} blur-3xl`} aria-hidden="true" />
+          <div className="relative flex items-center gap-3">
+            <span
+              className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-semibold text-white shadow-[0_12px_28px_rgba(15,23,42,0.18)] ${
+                symbolGradientByAccent[accentKey] ?? symbolGradientByAccent.sky
+              }`}
+            >
+              {activeCategoryData.label.slice(0, 2)}
+            </span>
+            <div className="min-w-0 space-y-1">
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">{activeCategoryData.label}</p>
+              <p className="text-xs leading-relaxed text-slate-500 dark:text-white/55">{activeCategoryData.description}</p>
             </div>
           </div>
+        </div>
 
-          <div className="grid gap-3">
-            {activeCategoryData.items.map((asset) => {
-              const isActiveAsset = asset.id === (activeAsset?.id ?? "")
-              const accentRingClass = accentActiveRing[accentKey] ?? accentActiveRing.sky
-              return (
-                <button
-                  key={asset.id}
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+          {activeCategoryData.items.map((asset) => {
+            const isActiveAsset = asset.id === (activeAsset?.id ?? "")
+            const accentRingClass = accentActiveRing[accentKey] ?? accentActiveRing.sky
+            return (
+              <button
+                key={asset.id}
                   type="button"
                   onClick={() => handleAssetChange(asset.id)}
                   aria-pressed={isActiveAsset}
@@ -576,15 +573,14 @@ export default function TradingViewBoard() {
                   <Sparkline
                     data={asset.spark}
                     isPositive={asset.changePercent >= 0}
-                    className="mt-2"
+                    className="mt-1"
                   />
                 </button>
               )
             })}
-          </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-[28px] border border-slate-200/60 bg-white/85 p-6 shadow-[0_24px_60px_rgba(6,10,32,0.35)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
+        <div className="relative overflow-hidden rounded-[28px] border border-slate-200/60 bg-white/85 p-6 shadow-[0_24px_60px_rgba(6,10,32,0.35)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5 lg:col-span-2 xl:col-span-1">
           <div className={`pointer-events-none absolute -left-14 top-2 h-48 w-48 ${glowClass} blur-3xl`} aria-hidden="true" />
           <div className={`pointer-events-none absolute -right-10 bottom-0 h-44 w-44 ${glowClass} blur-3xl`} aria-hidden="true" />
           <div className="relative flex h-full flex-col gap-5">
