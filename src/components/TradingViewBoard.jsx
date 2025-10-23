@@ -319,11 +319,17 @@ function ChangeBadge({ value, label, subtle = false, size = "sm" }) {
   )
 }
 
-function Sparkline({ data, isPositive, className = "" }) {
+function Sparkline({ data, isPositive, className }) {
   const gradientId = useId()
+  const resolvedClassName = className ?? "h-12 w-full"
 
   if (!Array.isArray(data) || data.length < 2) {
-    return <div className={`h-12 w-full rounded-full bg-slate-100/70 dark:bg-white/5 ${className}`} aria-hidden="true" />
+    return (
+      <div
+        className={`rounded-full bg-slate-100/70 dark:bg-white/5 ${resolvedClassName}`}
+        aria-hidden="true"
+      />
+    )
   }
 
   const max = Math.max(...data)
@@ -341,12 +347,7 @@ function Sparkline({ data, isPositive, className = "" }) {
   const areaPoints = ["0,100", ...coordinates, "100,100"].join(" ")
 
   return (
-    <svg
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      className={`h-12 w-full ${className}`}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={resolvedClassName} aria-hidden="true">
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={fillStart} />
@@ -529,19 +530,20 @@ export default function TradingViewBoard() {
             return (
               <button
                 key={asset.id}
-                  type="button"
-                  onClick={() => handleAssetChange(asset.id)}
-                  aria-pressed={isActiveAsset}
-                  className={`group relative flex w-full flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/85 px-4 py-4 text-left shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 ${
-                    isActiveAsset
-                      ? `ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-950 ${accentRingClass} bg-white text-slate-900 dark:bg-white/10 dark:text-white`
-                      : "hover:-translate-y-[2px] hover:border-slate-200 dark:hover:border-white/20"
-                  }`}
-                  data-track="tv_asset"
-                  data-track-action="click"
-                  data-track-label={asset.name}
-                >
-                  <div className="flex items-start gap-3">
+                type="button"
+                onClick={() => handleAssetChange(asset.id)}
+                aria-pressed={isActiveAsset}
+                className={`group relative flex w-full flex-col gap-4 rounded-2xl border border-slate-200/70 bg-white/85 px-4 py-4 text-left shadow-[0_8px_20px_rgba(15,23,42,0.04)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/5 sm:px-5 ${
+                  isActiveAsset
+                    ? `ring-2 ring-offset-2 ring-offset-white dark:ring-offset-slate-950 ${accentRingClass} bg-white text-slate-900 dark:bg-white/10 dark:text-white`
+                    : "hover:-translate-y-[2px] hover:border-slate-200 dark:hover:border-white/20"
+                }`}
+                data-track="tv_asset"
+                data-track-action="click"
+                data-track-label={asset.name}
+              >
+                <div className="flex w-full flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)] sm:items-center sm:gap-5">
+                  <div className="flex min-w-0 items-center gap-3">
                     <span
                       className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold text-white shadow-[0_6px_18px_rgba(15,23,42,0.12)] ${
                         symbolGradientByAccent[accentKey] ?? symbolGradientByAccent.sky
@@ -549,7 +551,7 @@ export default function TradingViewBoard() {
                     >
                       {asset.symbol}
                     </span>
-                    <div className="min-w-0 flex-1 space-y-1">
+                    <div className="min-w-0 space-y-1">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <p className="text-sm font-semibold text-slate-900 dark:text-white">{asset.name}</p>
                         {asset.badge ? (
@@ -560,24 +562,27 @@ export default function TradingViewBoard() {
                       </div>
                       <p className="text-xs text-slate-500 dark:text-white/50">{asset.subtitle}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-1 text-right">
-                      <p className="text-base font-semibold text-slate-900 dark:text-white">{formatPrice(asset.price)}</p>
-                      <div className="flex items-center gap-2">
-                        <ChangeBadge value={asset.changePercent} label="日" />
-                        {typeof asset.postMarketPercent === "number" ? (
-                          <ChangeBadge value={asset.postMarketPercent} label="盘后" subtle />
-                        ) : null}
-                      </div>
+                  </div>
+                  <div className="flex items-center justify-start sm:justify-center">
+                    <Sparkline
+                      data={asset.spark}
+                      isPositive={asset.changePercent >= 0}
+                      className="h-12 w-full rounded-full sm:h-14 sm:w-32 lg:w-40"
+                    />
+                  </div>
+                  <div className="flex flex-col items-start gap-2 text-left sm:items-end sm:text-right">
+                    <p className="text-base font-semibold text-slate-900 dark:text-white">{formatPrice(asset.price)}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <ChangeBadge value={asset.changePercent} label="日" />
+                      {typeof asset.postMarketPercent === "number" ? (
+                        <ChangeBadge value={asset.postMarketPercent} label="盘后" subtle />
+                      ) : null}
                     </div>
                   </div>
-                  <Sparkline
-                    data={asset.spark}
-                    isPositive={asset.changePercent >= 0}
-                    className="mt-1"
-                  />
-                </button>
-              )
-            })}
+                </div>
+              </button>
+            )
+          })}
         </div>
 
         <div className="relative overflow-hidden rounded-[28px] border border-slate-200/60 bg-white/85 p-6 shadow-[0_24px_60px_rgba(6,10,32,0.35)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5 lg:col-span-2 xl:col-span-1">
