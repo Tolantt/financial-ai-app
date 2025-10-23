@@ -120,6 +120,14 @@ export default function Teach() {
     return videoLibrary.filter((video) => isVideoMatched(video, activeFilter))
   }, [activeFilter])
 
+  const filteredInternalVideos = useMemo(() => {
+    return filteredVideos.filter((video) => video.type === "internal")
+  }, [filteredVideos])
+
+  const filteredExternalVideos = useMemo(() => {
+    return filteredVideos.filter((video) => video.type === "external")
+  }, [filteredVideos])
+
   const currentInternal = useMemo(() => {
     if (!currentInternalId) return null
     return videoLibrary.find((video) => video.id === currentInternalId && video.type === "internal") ?? null
@@ -141,8 +149,46 @@ export default function Teach() {
     }
   }, [currentInternal])
 
+  useEffect(() => {
+    if (filteredInternalVideos.length === 0) {
+      if (currentInternalId !== null) {
+        setCurrentInternalId(null)
+      }
+      return
+    }
+
+    const stillIncluded = filteredInternalVideos.some((video) => video.id === currentInternalId)
+    if (!stillIncluded) {
+      setCurrentInternalId(filteredInternalVideos[0].id)
+    }
+  }, [filteredInternalVideos, currentInternalId])
+
+  useEffect(() => {
+    if (filteredExternalVideos.length === 0) {
+      if (currentExternalId !== null) {
+        setCurrentExternalId(null)
+      }
+      return
+    }
+
+    const stillIncluded = filteredExternalVideos.some((video) => video.id === currentExternalId)
+    if (!stillIncluded && currentExternalId !== null) {
+      setCurrentExternalId(null)
+    }
+  }, [filteredExternalVideos, currentExternalId])
+
   const handleFilterChange = (filterId) => {
     setActiveFilter(filterId)
+  }
+
+  const scrollToPlayerRegion = () => {
+    if (!playerRegionRef.current) return
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+    playerRegionRef.current.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" })
   }
 
   const handlePlay = (video) => {
@@ -151,9 +197,7 @@ export default function Teach() {
     } else {
       setCurrentExternalId(video.id)
     }
-    if (playerRegionRef.current) {
-      playerRegionRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
+    scrollToPlayerRegion()
   }
 
   return (

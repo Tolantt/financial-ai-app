@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, { useContext, useEffect, useId, useMemo, useRef, useState } from "react"
 import { ThemeContext } from "../App"
 
 const TAB_DEFINITIONS = [
@@ -147,10 +147,15 @@ export default function TradingViewBoard() {
   const { theme } = useContext(ThemeContext)
   const [activeTab, setActiveTab] = useState(TAB_IDS[0])
   const containerRef = useRef(null)
+  const boardInstanceId = useId()
 
   const activeTabData = useMemo(() => {
     return TAB_DEFINITIONS.find((tab) => tab.id === activeTab) ?? TAB_DEFINITIONS[0]
   }, [activeTab])
+
+  const activePanelId = `${boardInstanceId}-${activeTab}-panel`
+  const activeDescriptionId = `${boardInstanceId}-${activeTab}-description`
+  const activeTabButtonId = `${boardInstanceId}-${activeTab}-tab`
 
   useEffect(() => {
     const container = containerRef.current
@@ -201,14 +206,16 @@ export default function TradingViewBoard() {
       >
         {TAB_DEFINITIONS.map((tab) => {
           const isActive = tab.id === activeTab
+          const tabId = `${boardInstanceId}-${tab.id}-tab`
+          const panelId = `${boardInstanceId}-${tab.id}-panel`
           return (
             <button
               key={tab.id}
               type="button"
               role="tab"
               aria-selected={isActive}
-              aria-controls={`tv-board-panel-${tab.id}`}
-              id={`tv-board-tab-${tab.id}`}
+              aria-controls={isActive ? panelId : undefined}
+              id={tabId}
               onClick={() => setActiveTab(tab.id)}
               className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 ${
                 isActive
@@ -227,15 +234,15 @@ export default function TradingViewBoard() {
       </div>
 
       <div className="space-y-4" role="presentation">
-        <p className="text-sm text-slate-600/90 dark:text-white/70" id={`tv-board-description-${activeTab}`}>
+        <p className="text-sm text-slate-600/90 dark:text-white/70" id={activeDescriptionId}>
           {activeTabData.description}
         </p>
 
         <div
-          id={`tv-board-panel-${activeTab}`}
+          id={activePanelId}
           role="tabpanel"
-          aria-labelledby={`tv-board-tab-${activeTab}`}
-          aria-describedby={`tv-board-description-${activeTab}`}
+          aria-labelledby={activeTabButtonId}
+          aria-describedby={activeDescriptionId}
           className="tradingview-widget-container min-h-[420px]"
           ref={containerRef}
         />
