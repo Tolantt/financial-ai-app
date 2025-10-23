@@ -2,13 +2,23 @@ import React from "react"
 
 export default function Footer() {
   return (
-    <footer className="border-t border-black/10 dark:border-white/10 mt-10 py-5">
-      <div className="w-[min(1100px,92vw)] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-        <p>© {new Date().getFullYear()} 金融AI服务平台 · All rights reserved.</p>
-        <nav className="flex gap-4 opacity-80">
-          <a href="#privacy">隐私与安全</a>
-          <a href="#terms">条款</a>
-          <a href="#contact">联系我们</a>
+    <footer className="relative mt-24 border-t border-white/20 py-12 text-sm text-slate-500/80 transition-colors duration-300 dark:border-white/10 dark:text-white/60">
+      <div className="pointer-events-none absolute inset-x-0 -top-10 h-20 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5" aria-hidden="true" />
+      <div className="mx-auto flex w-[min(1180px,92vw)] flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-2 text-left">
+          <p className="text-base font-semibold text-slate-700 dark:text-white">金融AI服务平台</p>
+          <p>© {new Date().getFullYear()} 金融AI服务平台 · All rights reserved.</p>
+        </div>
+        <nav className="flex flex-wrap gap-4 text-sm" aria-label="底部导航">
+          <a className="transition-colors hover:text-[#61DAFB]" href="#privacy">
+            隐私与安全
+          </a>
+          <a className="transition-colors hover:text-[#61DAFB]" href="#terms">
+            条款
+          </a>
+          <a className="transition-colors hover:text-[#61DAFB]" href="#contact">
+            联系我们
+          </a>
         </nav>
       </div>
     </footer>
