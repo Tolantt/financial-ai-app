@@ -456,19 +456,20 @@ export default function TradingViewBoard() {
 
   return (
     <section
-      className="mx-auto w-[min(1180px,92vw)] space-y-6 rounded-[28px] border border-slate-200/60 bg-white/70 px-6 py-10 shadow-[0_24px_60px_rgba(6,10,32,0.38)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5"
+      className="w-full px-4 py-8 md:px-6 md:py-10 lg:px-10 lg:py-12 xl:px-16"
       aria-label="市场概况"
       data-track-view="tv_board"
     >
-      <div className="flex flex-col gap-4 text-left">
+      <div className="space-y-8 rounded-[28px] border border-slate-200/60 bg-white/70 px-6 py-10 shadow-[0_24px_60px_rgba(6,10,32,0.38)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
+        <div className="flex flex-col gap-4 text-left">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:text-white/50">实时概览</p>
         <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">市场概况</h2>
-        <p className="max-w-3xl text-sm leading-relaxed text-slate-600/90 dark:text-white/70">{BOARD_INTRO}</p>
+        <p className="max-w-[72ch] text-sm leading-relaxed text-slate-600/90 dark:text-white/70">{BOARD_INTRO}</p>
         <div
           role="tablist"
           aria-label="行情分类"
           aria-orientation="horizontal"
-          className="flex flex-wrap items-stretch gap-3 pt-2"
+          className="no-scrollbar flex items-stretch gap-3 overflow-x-auto pt-2"
         >
           {BOARD_CATEGORIES.map((category) => {
             const isActive = category.id === activeCategory
@@ -483,7 +484,7 @@ export default function TradingViewBoard() {
                 aria-controls={`tv-board-panel-${category.id}`}
                 id={`tv-board-tab-${category.id}`}
                 onClick={() => handleCategoryChange(category.id)}
-                className={`relative flex min-w-[180px] flex-1 items-center justify-between gap-3 rounded-2xl border border-slate-200/70 px-5 py-4 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/15 ${
+                className={`relative flex min-w-[180px] flex-shrink-0 items-center justify-between gap-3 rounded-2xl border border-slate-200/70 px-5 py-4 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/15 lg:flex-1 ${
                   isActive
                     ? `bg-gradient-to-r ${categoryGradient} text-white ${tabShadow}`
                     : "bg-white/70 text-slate-700 hover:bg-white/90 dark:bg-white/10 dark:text-white/75 dark:hover:bg-white/15"
@@ -512,14 +513,12 @@ export default function TradingViewBoard() {
             )
           })}
         </div>
-      </div>
-
-      <div
-        id={`tv-board-panel-${activeCategoryData.id}`}
-        role="tabpanel"
-        aria-labelledby={`tv-board-tab-${activeCategoryData.id}`}
-        className="grid gap-8 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,380px)_minmax(0,1fr)]"
-      >
+        <div
+          id={`tv-board-panel-${activeCategoryData.id}`}
+          role="tabpanel"
+          aria-labelledby={`tv-board-tab-${activeCategoryData.id}`}
+          className="grid gap-8 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,380px)_minmax(0,1fr)]"
+        >
         <aside className="space-y-5">
           <div className="relative overflow-hidden rounded-[24px] border border-slate-200/70 bg-white/85 p-5 shadow-[0_16px_40px_rgba(6,10,32,0.16)] backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
             <div className={`pointer-events-none absolute -left-10 top-0 h-32 w-32 ${glowClass} blur-3xl`} aria-hidden="true" />

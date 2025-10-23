@@ -26,7 +26,7 @@ export default function AssistantDemo() {
 
   return (
     <div
-      className="relative overflow-hidden rounded-[28px] border border-slate-200/60 bg-white/70 p-6 shadow-[0_24px_60px_rgba(6,10,32,0.45)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5"
+      className="relative w-full overflow-hidden rounded-[28px] border border-slate-200/60 bg-white/70 p-6 shadow-[0_24px_60px_rgba(6,10,32,0.45)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5"
       data-track-view="assistant_box"
     >
       <span className="absolute right-6 top-6 inline-flex items-center gap-2 rounded-full border border-[#21A1F1]/40 bg-[#21A1F1]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#21A1F1] dark:border-[#61DAFB]/40 dark:bg-[#61DAFB]/15 dark:text-[#61DAFB]">
@@ -35,7 +35,7 @@ export default function AssistantDemo() {
 
       <div
         ref={listRef}
-        className="flex max-h-80 flex-col gap-3 overflow-y-auto rounded-2xl border border-transparent bg-white/40 p-3 pr-2 text-sm leading-relaxed text-slate-700 shadow-inner dark:bg-white/5 dark:text-white"
+        className="flex max-h-[60vh] flex-col gap-3 overflow-y-auto rounded-2xl border border-transparent bg-white/40 p-3 pr-2 text-sm leading-relaxed text-slate-700 shadow-inner dark:bg-white/5 dark:text-white"
         role="log"
         aria-live="polite"
         aria-relevant="additions"
@@ -43,7 +43,7 @@ export default function AssistantDemo() {
         {logs.map((message, index) => (
           <div key={`${message.role}-${index}`} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[80%] rounded-2xl border px-4 py-3 shadow-sm transition-colors duration-200 ${
+              className={`max-w-[min(820px,90vw)] rounded-2xl border px-4 py-3 shadow-sm transition-colors duration-200 ${
                 message.role === "user"
                   ? "border-transparent bg-gradient-to-r from-[#61DAFB] to-[#21A1F1] text-slate-950"
                   : "border-slate-200/60 bg-white/70 text-slate-800 dark:border-white/10 dark:bg-white/10 dark:text-white"

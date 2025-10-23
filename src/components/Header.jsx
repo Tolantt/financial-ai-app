@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { NavLink, Link } from "react-router-dom"
 import { ThemeContext } from "../App"
-import { scrollToTop } from "../utils/scrollToTop"
 
 const navs = [
+  { to: "/", label: "首页" },
   { to: "/guide", label: "投资攻略" },
   { to: "/assistant", label: "金融AI助手" },
   { to: "/teach", label: "金融教学" },
@@ -57,8 +57,13 @@ export default function Header() {
     setTheme(next)
   }
 
+  const scrollHomeSmoothly = () => {
+    if (typeof window === "undefined") return
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
   const handleHomeNavigation = () => {
-    scrollToTop({ behavior: "smooth" })
+    scrollHomeSmoothly()
     setOpen(false)
   }
 
@@ -71,26 +76,23 @@ export default function Header() {
         />
       )}
 
-      <header
-        className={`sticky top-0 z-50 pt-4 transition-[padding,background,box-shadow] duration-500 ${
-          scrolled ? "pb-2" : "pb-4"
-        }`}
-      >
-        <div
-          className={`mx-auto flex w-[min(1180px,92vw)] items-center justify-between gap-4 rounded-[22px] border px-5 py-3 backdrop-blur-2xl transition-all duration-500 ${
-            scrolled
-              ? "border-white/20 bg-white/70 text-slate-900 shadow-[0_18px_55px_rgba(6,10,28,0.45)] dark:border-white/10 dark:bg-[#0b1226]/85 dark:text-white"
-              : "border-white/15 bg-white/50 text-slate-900 shadow-[0_8px_40px_rgba(7,12,32,0.35)] dark:border-white/10 dark:bg-[#0b1226]/70 dark:text-white"
-          }`}
-        >
-          <Link
-            to="/"
-            className="group flex shrink-0 items-center gap-3 font-semibold tracking-wide focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
-            onClick={handleHomeNavigation}
+      <header className="sticky top-0 z-50 transition-[background,box-shadow] duration-500">
+        <div className={`w-full px-4 transition-[padding] duration-500 md:px-6 lg:px-10 xl:px-16 ${scrolled ? "py-2" : "py-4"}`}>
+          <div
+            className={`flex w-full items-center justify-between gap-4 rounded-[22px] border px-5 py-3 backdrop-blur-2xl transition-all duration-500 ${
+              scrolled
+                ? "border-white/20 bg-white/70 text-slate-900 shadow-[0_18px_55px_rgba(6,10,28,0.45)] dark:border-white/10 dark:bg-[#0b1226]/85 dark:text-white"
+                : "border-white/15 bg-white/50 text-slate-900 shadow-[0_8px_40px_rgba(7,12,32,0.35)] dark:border-white/10 dark:bg-[#0b1226]/70 dark:text-white"
+            }`}
           >
-            <span
-              aria-hidden="true"
-              className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-[#61DAFB] to-[#21A1F1] text-lg font-black text-slate-950 shadow-[0_12px_30px_rgba(33,161,241,0.35)] transition-transform duration-300 group-hover:-translate-y-0.5"
+            <Link
+              to="/"
+              className="group flex shrink-0 items-center gap-3 font-semibold tracking-wide focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
+              onClick={scrollHomeSmoothly}
+            >
+              <span
+                aria-hidden="true"
+                className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-[#61DAFB] to-[#21A1F1] text-lg font-black text-slate-950 shadow-[0_12px_30px_rgba(33,161,241,0.35)] transition-transform duration-300 group-hover:-translate-y-0.5"
             >
               ∑
             </span>
@@ -98,24 +100,29 @@ export default function Header() {
           </Link>
 
           <nav className="hidden items-center gap-1 text-sm font-medium md:flex" aria-label="主导航">
-            {navs.map((item) => (
-              <NavLink
-                key={item.label}
-                to={item.to}
-                className={({ isActive }) =>
-                  `relative rounded-full px-4 py-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#61DAFB] via-[#21A1F1] to-[#1d4ed8] text-white shadow-[0_10px_28px_rgba(33,161,241,0.45)]"
-                      : "text-slate-800/80 hover:bg-white/50 hover:text-slate-900 dark:text-slate-200/80 dark:hover:bg-white/15 dark:hover:text-white"
-                  }`
-                }
-                data-track="nav"
-                data-track-action="click"
-                data-track-label={item.label}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            {navs.map((item) => {
+              const isHome = item.to === "/"
+              return (
+                <NavLink
+                  key={item.label}
+                  to={item.to}
+                  end={isHome}
+                  className={({ isActive }) =>
+                    `relative rounded-full px-4 py-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${
+                      isActive
+                        ? "bg-gradient-to-r from-[#61DAFB] via-[#21A1F1] to-[#1d4ed8] text-white shadow-[0_10px_28px_rgba(33,161,241,0.45)]"
+                        : "text-slate-800/80 hover:bg-white/50 hover:text-slate-900 dark:text-slate-200/80 dark:hover:bg-white/15 dark:hover:text-white"
+                    }`
+                  }
+                  data-track="nav"
+                  data-track-action="click"
+                  data-track-label={item.label}
+                  onClick={isHome ? scrollHomeSmoothly : undefined}
+                >
+                  {item.label}
+                </NavLink>
+              )
+            })}
             <a
               href="#cta"
               className="ml-2 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#61DAFB] to-[#21A1F1] px-5 py-2 text-sm font-semibold text-slate-950 shadow-[0_12px_30px_rgba(33,161,241,0.45)] transition-all duration-200 hover:-translate-y-[1px] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
@@ -170,6 +177,7 @@ export default function Header() {
               </span>
             </button>
           </div>
+          </div>
         </div>
 
         <nav
@@ -182,28 +190,38 @@ export default function Header() {
           data-track-view="mobile_nav"
         >
           <div className="mx-auto mt-3 w-[min(520px,92vw)] space-y-2 rounded-2xl border border-white/15 bg-white/70 p-4 text-slate-900 shadow-[0_16px_44px_rgba(8,12,30,0.45)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#0b1226]/85 dark:text-white">
-            {navs.map((item) => (
-              <NavLink
-                key={item.label}
-                to={item.to}
-                className={({ isActive }) =>
-                  `flex items-center justify-between rounded-xl px-4 py-3 text-base transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#61DAFB] via-[#21A1F1] to-[#1d4ed8] font-semibold text-white shadow-[0_16px_36px_rgba(33,161,241,0.45)]"
-                      : "text-slate-800/85 hover:bg-white/60 dark:text-slate-200/85 dark:hover:bg-white/15"
-                  }`
-                }
-                data-track="nav"
-                data-track-action="click"
-                data-track-label={item.label}
-                onClick={() => setOpen(false)}
-              >
-                <span>{item.label}</span>
-                <span aria-hidden="true" className="text-lg opacity-60">
-                  →
-                </span>
-              </NavLink>
-            ))}
+            {navs.map((item) => {
+              const isHome = item.to === "/"
+              return (
+                <NavLink
+                  key={item.label}
+                  to={item.to}
+                  end={isHome}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between rounded-xl px-4 py-3 text-base transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 ${
+                      isActive
+                        ? "bg-gradient-to-r from-[#61DAFB] via-[#21A1F1] to-[#1d4ed8] font-semibold text-white shadow-[0_16px_36px_rgba(33,161,241,0.45)]"
+                        : "text-slate-800/85 hover:bg-white/60 dark:text-slate-200/85 dark:hover:bg-white/15"
+                    }`
+                  }
+                  data-track="nav"
+                  data-track-action="click"
+                  data-track-label={item.label}
+                  onClick={() => {
+                    if (isHome) {
+                      handleHomeNavigation()
+                    } else {
+                      setOpen(false)
+                    }
+                  }}
+                >
+                  <span>{item.label}</span>
+                  <span aria-hidden="true" className="text-lg opacity-60">
+                    →
+                  </span>
+                </NavLink>
+              )
+            })}
             <a
               href="#cta"
               className="flex items-center justify-center rounded-xl bg-gradient-to-r from-[#61DAFB] to-[#21A1F1] px-4 py-3 text-base font-semibold text-slate-950 shadow-[0_12px_30px_rgba(33,161,241,0.45)] transition-all duration-200 hover:-translate-y-[1px] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
