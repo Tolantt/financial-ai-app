@@ -37,7 +37,7 @@ const BOARD_INTRO =
 const BOARD_CATEGORIES = [
   {
     id: "overview",
-    label: "市场概括",
+    label: "市场概况",
     description: "聚焦美股核心指数与波动率指标，一眼掌握当日市场温度。",
     accent: "sky",
     chartInterval: "60",
@@ -433,7 +433,6 @@ export default function TradingViewBoard() {
   }, [activeAsset, activeCategoryData, theme])
 
   const accentKey = activeCategoryData?.accent ?? "sky"
-  const gradientClasses = accentGradients[accentKey] ?? accentGradients.sky
   const glowClass = accentSoft[accentKey] ?? accentSoft.sky
 
   const handleCategoryChange = (categoryId) => {
@@ -461,17 +460,65 @@ export default function TradingViewBoard() {
       aria-label="市场概况"
       data-track-view="tv_board"
     >
-      <div className="flex flex-col gap-3 text-left">
+      <div className="flex flex-col gap-4 text-left">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:text-white/50">实时概览</p>
         <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">市场概况</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-slate-600/90 dark:text-white/70">{BOARD_INTRO}</p>
+        <div
+          role="tablist"
+          aria-label="行情分类"
+          aria-orientation="horizontal"
+          className="flex flex-wrap items-stretch gap-3 pt-2"
+        >
+          {BOARD_CATEGORIES.map((category) => {
+            const isActive = category.id === activeCategory
+            const categoryGradient = accentGradients[category.accent] ?? accentGradients.sky
+            const tabShadow = accentShadow[category.accent] ?? accentShadow.sky
+            return (
+              <button
+                key={category.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`tv-board-panel-${category.id}`}
+                id={`tv-board-tab-${category.id}`}
+                onClick={() => handleCategoryChange(category.id)}
+                className={`relative flex min-w-[180px] flex-1 items-center justify-between gap-3 rounded-2xl border border-slate-200/70 px-5 py-4 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/15 ${
+                  isActive
+                    ? `bg-gradient-to-r ${categoryGradient} text-white ${tabShadow}`
+                    : "bg-white/70 text-slate-700 hover:bg-white/90 dark:bg-white/10 dark:text-white/75 dark:hover:bg-white/15"
+                }`}
+                data-track="tv_category"
+                data-track-action="click"
+                data-track-label={category.label}
+              >
+                <div className="flex min-w-0 flex-col text-left">
+                  <span>{category.label}</span>
+                  <span className="text-xs font-normal opacity-80">
+                    {category.description.slice(0, 22)}
+                    {category.description.length > 22 ? "…" : ""}
+                  </span>
+                </div>
+                {isActive ? (
+                  <span className="shrink-0 rounded-full border border-white/40 bg-white/20 px-2 py-[2px] text-[11px] font-medium text-white/85">
+                    已选
+                  </span>
+                ) : (
+                  <span aria-hidden="true" className="shrink-0 text-lg leading-none opacity-40">
+                    →
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <div
         id={`tv-board-panel-${activeCategoryData.id}`}
         role="tabpanel"
         aria-labelledby={`tv-board-tab-${activeCategoryData.id}`}
-        className="grid gap-8 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,320px)_minmax(0,1fr)]"
+        className="grid gap-8 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,380px)_minmax(0,1fr)]"
       >
         <aside className="space-y-5">
           <div className="relative overflow-hidden rounded-[24px] border border-slate-200/70 bg-white/85 p-5 shadow-[0_16px_40px_rgba(6,10,32,0.16)] backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
@@ -492,93 +539,7 @@ export default function TradingViewBoard() {
             </div>
           </div>
 
-          <div role="tablist" aria-label="行情分类" aria-orientation="vertical" className="flex flex-col gap-3">
-            {BOARD_CATEGORIES.map((category) => {
-              const isActive = category.id === activeCategory
-              const categoryGradient = accentGradients[category.accent] ?? accentGradients.sky
-              const tabShadow = accentShadow[category.accent] ?? accentShadow.sky
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls={`tv-board-panel-${category.id}`}
-                  id={`tv-board-tab-${category.id}`}
-                  onClick={() => handleCategoryChange(category.id)}
-                  className={`relative inline-flex items-center justify-between gap-2 rounded-2xl border border-slate-200/70 px-5 py-4 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/15 ${
-                    isActive
-                      ? `bg-gradient-to-r ${categoryGradient} text-white ${tabShadow}`
-                      : "bg-white/70 text-slate-700 hover:bg-white/90 dark:bg-white/10 dark:text-white/75 dark:hover:bg-white/15"
-                  }`}
-                  data-track="tv_category"
-                  data-track-action="click"
-                  data-track-label={category.label}
-                >
-                  <div className="flex min-w-0 flex-col text-left">
-                    <span>{category.label}</span>
-                    <span className="text-xs font-normal opacity-80">
-                      {category.description.slice(0, 22)}
-                      {category.description.length > 22 ? "…" : ""}
-                    </span>
-                  </div>
-                  {isActive ? (
-                    <span className="shrink-0 rounded-full border border-white/40 bg-white/20 px-2 py-[2px] text-[11px] font-medium text-white/85">已选</span>
-                  ) : (
-                    <span aria-hidden="true" className="shrink-0 text-lg leading-none opacity-40">
-                      →
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </aside>
-
-        <div className="space-y-6">
-          <div className="relative overflow-hidden rounded-[28px] border border-slate-200/60 bg-white/85 p-6 shadow-[0_24px_60px_rgba(6,10,32,0.35)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
-            <div className={`pointer-events-none absolute -left-14 top-2 h-48 w-48 ${glowClass} blur-3xl`} aria-hidden="true" />
-            <div className={`pointer-events-none absolute -right-10 bottom-0 h-44 w-44 ${glowClass} blur-3xl`} aria-hidden="true" />
-            <div className="relative flex h-full flex-col gap-5">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="space-y-3">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:border-white/15 dark:bg-white/10 dark:text-white/60">
-                    焦点资产
-                  </span>
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{activeAsset?.name}</h3>
-                      <span className="text-sm text-slate-500 dark:text-white/60">{activeAsset?.subtitle}</span>
-                    </div>
-                    {activeAsset?.insight ? (
-                      <p className="text-xs text-slate-500 dark:text-white/50">{activeAsset.insight}</p>
-                    ) : null}
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <p className="text-2xl font-semibold text-slate-900 dark:text-white">{formatPrice(activeAsset?.price)}</p>
-                    <ChangeBadge value={activeAsset?.changePercent} label="日" size="lg" />
-                  </div>
-                  <div className="flex flex-wrap items-center justify-end gap-2">
-                    {typeof activeAsset?.postMarketPercent === "number" ? (
-                      <ChangeBadge value={activeAsset.postMarketPercent} label="盘后" subtle size="lg" />
-                    ) : null}
-                    <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/60 px-3 py-1 text-xs font-medium text-slate-500 dark:border-white/15 dark:bg-white/10 dark:text-white/60">
-                      <span aria-hidden="true" className="inline-flex h-2.5 w-2.5 rounded-full bg-current opacity-60" />
-                      {activeAsset?.chartSymbol}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="relative min-h-[380px] flex-1">
-                <div ref={chartContainerRef} className="tradingview-widget-container absolute inset-0" />
-              </div>
-            </div>
-          </div>
-
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             {activeCategoryData.items.map((asset) => {
               const isActiveAsset = asset.id === (activeAsset?.id ?? "")
               const accentRingClass = accentActiveRing[accentKey] ?? accentActiveRing.sky
@@ -597,7 +558,7 @@ export default function TradingViewBoard() {
                   data-track-action="click"
                   data-track-label={asset.name}
                 >
-                  <div className="flex w-full flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)] sm:items-center sm:gap-5">
+                  <div className="flex w-full flex-col gap-3 md:grid md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)] md:items-center md:gap-5">
                     <div className="flex min-w-0 items-center gap-3">
                       <span
                         className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold text-white shadow-[0_6px_18px_rgba(15,23,42,0.12)] ${
@@ -618,14 +579,14 @@ export default function TradingViewBoard() {
                         <p className="text-xs text-slate-500 dark:text-white/50">{asset.subtitle}</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-start sm:justify-center">
+                    <div className="flex items-center justify-start md:justify-center">
                       <Sparkline
                         data={asset.spark}
                         isPositive={asset.changePercent >= 0}
-                        className="h-12 w-full rounded-full sm:h-14 sm:w-32 lg:w-40"
+                        className="h-12 w-full rounded-full md:h-14 md:w-32 lg:w-40"
                       />
                     </div>
-                    <div className="flex flex-col items-start gap-2 text-left sm:items-end sm:text-right">
+                    <div className="flex flex-col items-start gap-2 text-left md:items-end md:text-right">
                       <p className="text-base font-semibold text-slate-900 dark:text-white">{formatPrice(asset.price)}</p>
                       <div className="flex flex-wrap items-center gap-2">
                         <ChangeBadge value={asset.changePercent} label="日" />
@@ -638,6 +599,49 @@ export default function TradingViewBoard() {
                 </button>
               )
             })}
+          </div>
+
+        </aside>
+
+        <div className="relative overflow-hidden rounded-[28px] border border-slate-200/60 bg-white/85 p-6 shadow-[0_24px_60px_rgba(6,10,32,0.35)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5">
+          <div className={`pointer-events-none absolute -left-14 top-2 h-48 w-48 ${glowClass} blur-3xl`} aria-hidden="true" />
+          <div className={`pointer-events-none absolute -right-10 bottom-0 h-44 w-44 ${glowClass} blur-3xl`} aria-hidden="true" />
+          <div className="relative flex h-full flex-col gap-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-3">
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-slate-500/80 dark:border-white/15 dark:bg-white/10 dark:text-white/60">
+                  焦点资产
+                </span>
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{activeAsset?.name}</h3>
+                    <span className="text-sm text-slate-500 dark:text-white/60">{activeAsset?.subtitle}</span>
+                  </div>
+                  {activeAsset?.insight ? (
+                    <p className="text-xs text-slate-500 dark:text-white/50">{activeAsset.insight}</p>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-2xl font-semibold text-slate-900 dark:text-white">{formatPrice(activeAsset?.price)}</p>
+                  <ChangeBadge value={activeAsset?.changePercent} label="日" size="lg" />
+                </div>
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  {typeof activeAsset?.postMarketPercent === "number" ? (
+                    <ChangeBadge value={activeAsset.postMarketPercent} label="盘后" subtle size="lg" />
+                  ) : null}
+                  <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/60 px-3 py-1 text-xs font-medium text-slate-500 dark:border-white/15 dark:bg-white/10 dark:text-white/60">
+                    <span aria-hidden="true" className="inline-flex h-2.5 w-2.5 rounded-full bg-current opacity-60" />
+                    {activeAsset?.chartSymbol}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="relative min-h-[380px] flex-1">
+              <div ref={chartContainerRef} className="tradingview-widget-container absolute inset-0" />
+            </div>
           </div>
         </div>
       </div>
