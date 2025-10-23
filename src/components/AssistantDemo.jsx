@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+import { ASSISTANT_API_URL } from "../config/env.js"
 
 export default function AssistantDemo() {
   const [input, setInput] = useState("")
@@ -65,7 +66,8 @@ export default function AssistantDemo() {
       </form>
 
       <p className="text-sm opacity-70 mt-2">
-        * 本地占位 Demo。接入后端时，把 <code>mockReply</code> 替换为真实 API 调用。
+        * 本地占位 Demo。接入后端时，把 <code>mockReply</code> 替换为 <code>{ASSISTANT_API_URL}</code> 的真实
+        API 调用。
       </p>
     </div>
   )
