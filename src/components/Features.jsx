@@ -11,18 +11,22 @@ const cards = [
 
 export default function Features() {
   return (
-    <section id="guide" className="mx-auto w-[min(1180px,92vw)] py-16" data-track-view="features">
+    <section
+      id="guide"
+      className="w-full px-4 py-8 md:px-6 md:py-10 lg:px-10 lg:py-12 xl:px-16"
+      data-track-view="features"
+    >
       <div className="mb-10 flex flex-col gap-4 text-left sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500/80 dark:text-white/50">核心能力</p>
           <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white sm:text-3xl">我们能帮你做什么？</h2>
         </div>
-        <p className="max-w-xl text-sm leading-relaxed text-slate-600/90 dark:text-white/70">
+        <p className="max-w-[72ch] text-sm leading-relaxed text-slate-600/90 dark:text-white/70">
           以卡片式信息架构呈现投资、教育、量化与社区能力，保持主次分明的密度与层级，便于快速浏览并进一步探索。
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8">
         {cards.map((card) => (
           <article
             key={card.title}
