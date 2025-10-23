@@ -5,7 +5,7 @@ import { ThemeContext } from "../App"
 const navs = [
   { to: "/guide", label: "投资攻略" },
   { to: "/assistant", label: "金融AI助手" },
-  { to: "/edu", label: "金融教育" },
+  { to: "/teach", label: "金融教学" },
   { to: "/quant", label: "量化策略" },
   { to: "/community", label: "社区" },
 ]
@@ -21,7 +21,7 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => {
       const atTop = window.scrollY > 12
-      setScrolled(prev => (prev === atTop ? prev : atTop))
+      setScrolled((prev) => (prev === atTop ? prev : atTop))
     }
     handleScroll()
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -56,6 +56,11 @@ export default function Header() {
     setTheme(next)
   }
 
+  const handleHomeNavigation = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    setOpen(false)
+  }
+
   return (
     <>
       {open && (
@@ -79,7 +84,8 @@ export default function Header() {
         >
           <Link
             to="/"
-            className="group flex shrink-0 items-center gap-3 font-semibold tracking-wide focus-visible:rounded-full"
+            className="group flex shrink-0 items-center gap-3 font-semibold tracking-wide focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
+            onClick={handleHomeNavigation}
           >
             <span
               aria-hidden="true"
