@@ -19,6 +19,14 @@ npm run dev
 npm run build
 npm run preview
 
+## 预览部署工作流
+- 仓库包含 `.github/workflows/preview-deploy.yml`，会在 push 到 `preview/**`、`feature/**` 或 `staging` 分支时自动运行。
+- 工作流会执行 `npm ci` 和 `npm run build`，随后使用 [Surge](https://surge.sh) 把 `dist/` 目录部署到临时 URL。
+- 在 GitHub 仓库的 **Settings → Secrets and variables → Actions** 下添加两个仓库级别的 secrets：
+  - `SURGE_LOGIN`：Surge 账户邮箱。
+  - `SURGE_TOKEN`：使用 `surge token` 生成的 API Token。
+- 工作流会在部署成功后创建 `preview/<branch>` 环境并把临时链接写入部署记录，便于快速查看。
+
 ## 设计说明
 - **色彩层次**：深色主题采用 #0B1020→#0F1630 的纵向渐变叠加蓝紫径向光束，浅色主题则以低饱和冷色底层铺陈，呼应金融科技氛围。
 - **玻璃拟态**：主要卡片、导航条与 CTA 使用半透明白 + `backdrop-blur` 的玻璃质感，辅以 1px 亮边与投影，强调层次与可读性。
