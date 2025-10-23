@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { HashRouter, Routes, Route } from "react-router-dom"
+import { HashRouter, Routes, Route, useLocation } from "react-router-dom"
 
 import Header from "./components/Header"
 import Hero from "./components/Hero"
+import TradingViewBoard from "./components/TradingViewBoard"
 import Features from "./components/Features"
 import AssistantDemo from "./components/AssistantDemo"
 import Footer from "./components/Footer"
@@ -10,12 +11,24 @@ import { APP_TITLE } from "./config/env.js"
 
 import Guide from "./pages/Guide"
 import Assistant from "./pages/Assistant"
-import Education from "./pages/Education"
 import Quant from "./pages/Quant"
 import Community from "./pages/Community"
+import Teach from "./pages/Teach"
 import NotFound from "./pages/NotFound"
 
 export const ThemeContext = React.createContext({ theme: "dark", setTheme: () => {} })
+
+function ScrollToTopOnRoute() {
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }, [location.pathname])
+
+  return null
+}
 
 export default function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark")
@@ -46,6 +59,7 @@ export default function App() {
       </a>
 
       <HashRouter>
+        <ScrollToTopOnRoute />
         <div className="flex min-h-screen flex-col">
           <Header />
 
@@ -56,6 +70,7 @@ export default function App() {
                 element={
                   <div className="space-y-20 pb-24">
                     <Hero />
+                    <TradingViewBoard />
                     <Features />
 
                     <section
@@ -124,7 +139,7 @@ export default function App() {
 
               <Route path="/guide" element={<Guide />} />
               <Route path="/assistant" element={<Assistant />} />
-              <Route path="/edu" element={<Education />} />
+              <Route path="/teach" element={<Teach />} />
               <Route path="/quant" element={<Quant />} />
               <Route path="/community" element={<Community />} />
               <Route path="*" element={<NotFound />} />
