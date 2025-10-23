@@ -16,7 +16,19 @@ export default function Quant() {
           <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#61DAFB]" />
           开发中
         </span>
-        <h1 className="mt-6 text-3xl font-bold text-slate-900 dark:text-white">量化策略</h1>
+        <h1 className="mt-6 text-3xl font-bold text-slate-900 dark:text-white">
+          <span className="relative inline-flex items-center gap-3 overflow-hidden rounded-[28px] px-6 py-3 text-white shadow-[0_18px_44px_rgba(251,113,133,0.42)]">
+            <span className="absolute inset-0 bg-gradient-to-r from-[#f97316] via-[#fb7185] to-[#f472b6]" aria-hidden="true" />
+            <span className="absolute inset-0 blur-xl bg-[#fb7185]/45" aria-hidden="true" />
+            <span
+              aria-hidden="true"
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-white/35 bg-white/15 text-lg"
+            >
+              ✦
+            </span>
+            <span className="relative text-2xl font-semibold tracking-wide">量化策略</span>
+          </span>
+        </h1>
         <p className="mt-4 text-base leading-relaxed text-slate-600/90 dark:text-white/70">功能开发中，敬请期待。</p>
         <Link
           to="/"
