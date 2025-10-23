@@ -6,6 +6,7 @@ import Hero from "./components/Hero"
 import Features from "./components/Features"
 import AssistantDemo from "./components/AssistantDemo"
 import Footer from "./components/Footer"
+import { APP_TITLE } from "./config/env.js"
 
 import Guide from "./pages/Guide"
 import Assistant from "./pages/Assistant"
@@ -18,6 +19,10 @@ export const ThemeContext = React.createContext({ theme: "dark", setTheme: () =>
 
 export default function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark")
+
+  useEffect(() => {
+    document.title = APP_TITLE
+  }, [])
 
   useEffect(() => {
     const html = document.documentElement
