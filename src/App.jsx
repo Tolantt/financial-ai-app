@@ -8,6 +8,7 @@ import Features from "./components/Features"
 import AssistantDemo from "./components/AssistantDemo"
 import Footer from "./components/Footer"
 import { APP_TITLE } from "./config/env.js"
+import { scrollToTop } from "./utils/scrollToTop"
 
 import Guide from "./pages/Guide"
 import Assistant from "./pages/Assistant"
@@ -23,7 +24,7 @@ function ScrollToTopOnRoute() {
 
   useEffect(() => {
     if (location.pathname === "/") {
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      scrollToTop({ behavior: "auto" })
     }
   }, [location.pathname])
 

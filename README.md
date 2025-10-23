@@ -1,4 +1,4 @@
-# 金融AI服务平台
+# Anxurs
 
 Vite + React 19 + Tailwind CSS v4 示例项目。
 

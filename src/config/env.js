@@ -20,7 +20,7 @@ const assistantOverride = rawEnv.VITE_ASSISTANT_API_URL && rawEnv.VITE_ASSISTANT
 export const ENABLE_ANALYTICS = asBoolean(rawEnv.VITE_ENABLE_ANALYTICS, true)
 export const API_BASE_URL = apiBase
 export const ASSISTANT_API_URL = assistantOverride || `${apiBase}/assistant/query`
-export const APP_TITLE = rawEnv.VITE_APP_TITLE || "金融AI服务平台"
+export const APP_TITLE = rawEnv.VITE_APP_TITLE || "Anxurs"
 
 export function describeEnvironment() {
   return {

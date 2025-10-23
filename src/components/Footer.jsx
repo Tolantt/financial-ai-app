@@ -6,8 +6,8 @@ export default function Footer() {
       <div className="pointer-events-none absolute inset-x-0 -top-10 h-20 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5" aria-hidden="true" />
       <div className="mx-auto flex w-[min(1180px,92vw)] flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-2 text-left">
-          <p className="text-base font-semibold text-slate-700 dark:text-white">金融AI服务平台</p>
-          <p>© {new Date().getFullYear()} 金融AI服务平台 · All rights reserved.</p>
+          <p className="text-base font-semibold text-slate-700 dark:text-white">Anxurs</p>
+          <p>© {new Date().getFullYear()} Anxurs · All rights reserved.</p>
         </div>
         <nav className="flex flex-wrap gap-4 text-sm" aria-label="底部导航">
           <a className="transition-colors hover:text-[#61DAFB]" href="#privacy">
