@@ -1,353 +1,314 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React from "react"
 
-const filterOptions = [
-  { id: "all", label: "全部" },
-  { id: "intro", label: "入门" },
-  { id: "allocation", label: "资产配置" },
-  { id: "valuation", label: "估值" },
-  { id: "macro", label: "宏观" },
-  { id: "risk", label: "风险管理" },
+const boards = [
+  {
+    id: "how-to",
+    title: "新手上路",
+    tagline: "The \"How-To\" Guide",
+    description:
+      "解决“如何开始”的实操问题，从心态准备、境内开户到全球投资渠道，提供保姆级图文与视频教程。",
+    accent: {
+      bg: "from-[#1f6feb]/15 via-[#21a1f1]/10 to-[#0ea5e9]/20",
+      ring: "ring-[#21A1F1]/60",
+    },
+    items: [
+      {
+        title: "投资前的心态与准备",
+        summary: "树立正确的投资观，理解风险、收益与周期的关系。",
+        highlights: [
+          "认识风险、收益与周期的互动，避免短线情绪化决策。",
+          "什么是资产配置？为什么鸡蛋不能放在同一个篮子？［文章 + 信息图］",
+          "你的第一笔投资应该投多少？闲钱投资与紧急备用金的设立。",
+        ],
+        formats: ["基础文章", "短视频"],
+      },
+      {
+        title: "境内投资实操（A股、基金）",
+        summary: "跟随步骤即可完成开户、选平台、开启基金定投。",
+        highlights: [
+          "A股开户：如何对比券商手续费、投研服务与 APP 体验。",
+          "A股开户流程详解，逐屏截图演示。［图文教程］",
+          "基金入门：支付宝、天天基金、蛋卷基金等平台优劣比较。",
+          "手把手教你开启基金定投，配置目标与扣款节奏。［视频教程］",
+        ],
+        formats: ["图文教程", "步骤拆解视频"],
+      },
+      {
+        title: "全球投资渠道（港美股）",
+        summary: "用户重点需求，覆盖证件办理、银行账户、券商开户与资金出入金全流程。",
+        badge: "用户重点需求",
+        blocks: [
+          {
+            heading: "证件准备",
+            details: [
+              "如何办理港澳通行证及签注？［图文指南］",
+              "护照申请流程与办理时效。",
+            ],
+          },
+          {
+            heading: "境外银行卡（核心）",
+            details: [
+              "为什么需要香港银行卡？常见用途与合规说明。",
+              "中银香港、汇丰、渣打等银行开户攻略，所需材料、预约方式与注意事项。［超详细图文 + 视频］",
+              "新加坡华侨银行（OCBC）、美国银行等其他境外卡的优劣对比。",
+            ],
+          },
+          {
+            heading: "券商开户（核心）",
+            details: [
+              "富途、老虎、盈透、嘉信理财等主流港美股券商手续费与功能对比。［表格对比］",
+              "在线开户流程演示，上传资料与视频见证技巧。［视频教程］",
+            ],
+          },
+          {
+            heading: "资金出入金指南",
+            details: [
+              "内地购汇与换汇额度管理。",
+              "转账至香港银行卡，再入金券商的操作流程。［流程图 + 视频］",
+            ],
+          },
+        ],
+        formats: ["极其详细图文步骤", "视频演示", "对比表格", "信息图（流程图）"],
+      },
+    ],
+  },
+  {
+    id: "knowledge",
+    title: "金融知识库",
+    tagline: "The \"What & Why\"",
+    description: "系统化普及金融概念与理论，打牢投资理解力。",
+    accent: {
+      bg: "from-[#8b5cf6]/15 via-[#6366f1]/10 to-[#0ea5e9]/15",
+      ring: "ring-[#6366f1]/60",
+    },
+    items: [
+      {
+        title: "金融词典 (Concepts)",
+        summary: "用最通俗的语言解释核心词汇，随时查阅。",
+        highlights: [
+          "股票：P/E（市盈率）、P/B（市净率）、ROE（净资产收益率）、EPS（每股收益）、分红、派息。",
+          "基金：ETF、LOF、FOF、QDII、主动型基金、被动指数基金。",
+          "宏观：CPI、PPI、GDP、降息/加息、降准、通胀与通缩。",
+          "其他：债券、期货、期权、可转债。",
+        ],
+        formats: ["1-3 分钟短视频", "词条图片卡片"],
+      },
+      {
+        title: "投资理论 (Theories)",
+        summary: "理解经典投资理念，构建自己的投资体系。",
+        highlights: [
+          "价值投资：护城河与安全边际的实操案例。",
+          "成长投资：筛选高成长公司的关键指标。",
+          "技术分析：K 线图入门、道氏理论、移动平均线（MA）。",
+          "经典理论：有效市场假说、现代投资组合理论（MPT）、资本资产定价模型（CAPM）。",
+        ],
+        formats: ["深度文章", "图解长图", "系列讲座视频"],
+      },
+      {
+        title: "金融模型 (Models)",
+        summary: "估值模型从入门到进阶，配合可下载模板。",
+        highlights: [
+          "如何给公司估值？理论拆解 + 案例演示。",
+          "DCF（现金流折现）模型入门与敏感性分析。",
+          "相对估值法：P/E、P/B 的适用场景。",
+          "进阶模型：Black-Scholes 期权定价。",
+        ],
+        formats: ["深度教程", "可下载 Excel 模板", "教学视频"],
+      },
+    ],
+  },
+  {
+    id: "masters",
+    title: "投资大师说",
+    tagline: "Wisdom from Masters",
+    description: "站在巨人肩膀，了解大师理念、经典著作与投资方法。",
+    accent: {
+      bg: "from-[#f97316]/15 via-[#f59e0b]/10 to-[#fde68a]/20",
+      ring: "ring-[#f59e0b]/60",
+    },
+    items: [
+      {
+        title: "大师理念",
+        summary: "提炼投资大师的核心思想，帮助形成长期主义视角。",
+        highlights: [
+          "巴菲特与芒格：价值投资、长期主义、能力圈边界。",
+          "彼得·林奇：投资你所了解的（Buy what you know）。",
+          "瑞·达利欧：全天候策略、经济周期理论、《原则》。",
+          "霍华德·马克斯：周期、第二层思维、《投资最重要的事》。",
+        ],
+        formats: ["人物传记文章", "理念总结视频", "经典语录卡片"],
+      },
+      {
+        title: "经典导读",
+        summary: "精选投资必读书单，配备导读与精读笔记。",
+        highlights: [
+          "投资必读书单与进阶阅读顺序推荐。",
+          "《聪明的投资者》精读系列文章与视频解析。",
+          "《证券分析》导读，拆解章节重点。",
+        ],
+        formats: ["读书笔记", "视频解读书籍"],
+      },
+    ],
+  },
+  {
+    id: "research",
+    title: "深度投研与资源",
+    tagline: "In-depth Research",
+    description: "链接专业投研报告与数据资源，助力进阶学习。",
+    accent: {
+      bg: "from-[#14b8a6]/15 via-[#0ea5e9]/10 to-[#1f2937]/20",
+      ring: "ring-[#14b8a6]/60",
+    },
+    items: [
+      {
+        title: "研报精读",
+        summary: "教你读懂券商研报，并精炼热门行业与宏观观点。",
+        highlights: [
+          "如何阅读一份券商研报：框架、重点页与风险提示。［教程］",
+          "精选 AI、新能源、生物医药等行业研报，拆解核心结论。",
+          "宏观经济分析：跟踪最新数据与央行政策。",
+        ],
+        formats: ["文章总结", "研报链接", "图文解析"],
+      },
+      {
+        title: "资源导航",
+        summary: "构建你的投研工具箱，快速定位权威数据与媒体。",
+        highlights: [
+          "数据网站：东方财富、新浪财经、Investing.com 等。",
+          "监管机构：证监会、港交所、SEC 官网查找财报的方法。",
+          "专业媒体：财新、Bloomberg、华尔街日报等权威资讯入口。",
+        ],
+        formats: ["友情链接列表", "资源导航页"],
+      },
+    ],
+  },
 ]
 
-const createPoster = (title, subtitle, fromColor, toColor) => {
-  const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop stop-color="${fromColor}" offset="0%" />
-      <stop stop-color="${toColor}" offset="100%" />
-    </linearGradient>
-  </defs>
-  <rect width="800" height="450" rx="36" fill="url(#g)" />
-  <g fill="rgba(255,255,255,0.92)" font-family="'PingFang SC', 'Segoe UI', sans-serif">
-    <text x="60" y="210" font-size="64" font-weight="700">${title}</text>
-    <text x="60" y="270" font-size="28" opacity="0.8">${subtitle}</text>
-  </g>
-  <circle cx="660" cy="120" r="80" fill="rgba(255,255,255,0.18)" />
-  <circle cx="700" cy="320" r="60" fill="rgba(255,255,255,0.12)" />
-</svg>`
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`
-}
+const FormatBadge = ({ label }) => (
+  <span className="inline-flex items-center rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur dark:bg-white/15 dark:text-white/80">
+    {label}
+  </span>
+)
 
-const videoLibrary = [
-  {
-    id: "foundations",
-    type: "internal",
-    title: "投资基础入门课",
-    duration: "12:36",
-    categories: ["intro"],
-    description: "从投资目标、风险偏好到资产分类，建立系统化的入门框架。",
-    poster: createPoster("基础入门", "构建你的投资底层逻辑", "#21A1F1", "#61DAFB"),
-    thumbnail: createPoster("基础入门", "站内课程", "#1f6feb", "#61dafb"),
-    sources: {
-      mp4: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-      webm: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm",
-    },
-    captions: "data:text/vtt,WEBVTT%0A%0A00:00:00.000 --> 00:00:04.500%0A欢迎来到投资基础入门课程。%0A%0A00:00:04.500 --> 00:00:09.000%0A我们将介绍资产类型与风险收益特征。",
-  },
-  {
-    id: "asset-lab",
-    type: "internal",
-    title: "资产配置实践工作坊",
-    duration: "18:42",
-    categories: ["allocation", "risk"],
-    description: "演示如何用均衡与风险预算模型搭建多资产组合。",
-    poster: createPoster("资产配置", "动态调仓演练", "#7f5af0", "#2cb1bc"),
-    thumbnail: createPoster("资产配置", "模拟回测", "#7f5af0", "#2cb1bc"),
-    sources: {
-      mp4: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-      webm: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm",
-    },
-    captions: "data:text/vtt,WEBVTT%0A%0A00:00:00.000 --> 00:00:05.000%0A本节展示多资产组合的配置流程。%0A%0A00:00:05.000 --> 00:00:10.000%0A通过风险平价与情景分析优化权重。",
-  },
-  {
-    id: "valuation-youtube",
-    type: "external",
-    platform: "YouTube",
-    title: "现金流折现与估值敏感度",
-    duration: "15:20",
-    categories: ["valuation"],
-    description: "结合实例拆解 DCF、倍数估值与假设敏感度分析。",
-    thumbnail: createPoster("估值分析", "YouTube", "#f97316", "#fb7185"),
-    embedUrl: "https://www.youtube.com/embed/p7HKvqRI_Bo?rel=0",
-  },
-  {
-    id: "macro-bilibili",
-    type: "external",
-    platform: "Bilibili",
-    title: "全球宏观视角下的资产轮动",
-    duration: "22:05",
-    categories: ["macro", "allocation"],
-    description: "对比主要经济体 PMI 与利率周期，预判资产轮换节奏。",
-    thumbnail: createPoster("宏观洞察", "Bilibili", "#3b82f6", "#1d4ed8"),
-    embedUrl: "https://player.bilibili.com/player.html?bvid=BV1h4411B7k6&high_quality=1&autoplay=0",
-  },
-  {
-    id: "risk-tencent",
-    type: "external",
-    platform: "腾讯视频",
-    title: "量化风险管理 10 条核心原则",
-    duration: "11:48",
-    categories: ["risk"],
-    description: "覆盖 VaR、压力测试、黑天鹅应对以及仓位止损策略。",
-    thumbnail: createPoster("风险管理", "腾讯课堂", "#14b8a6", "#0ea5e9"),
-    embedUrl: "https://v.qq.com/txp/iframe/player.html?vid=d3226y1m9cz&autoplay=false",
-  },
-]
+const HighlightList = ({ highlights }) => (
+  <ul className="space-y-2 text-sm leading-relaxed text-slate-600/95 dark:text-white/70">
+    {highlights.map((item) => (
+      <li key={item} className="flex items-start gap-2">
+        <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400/80 dark:bg-white/60" aria-hidden="true" />
+        <span>{item}</span>
+      </li>
+    ))}
+  </ul>
+)
 
-const isVideoMatched = (video, filterId) => {
-  if (filterId === "all") return true
-  return video.categories.includes(filterId)
-}
-
-const badgeLabel = (video) => {
-  if (video.type === "internal") {
-    return "站内课程"
-  }
-  return video.platform
-}
+const ContentBlock = ({ heading, details }) => (
+  <div className="rounded-2xl border border-white/40 bg-white/70 p-4 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
+    <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{heading}</h4>
+    <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-slate-600/95 dark:text-white/70">
+      {details.map((item) => (
+        <li key={item} className="flex items-start gap-2">
+          <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-slate-400/80 dark:bg-white/60" aria-hidden="true" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)
 
 export default function Teach() {
-  const [activeFilter, setActiveFilter] = useState(filterOptions[0].id)
-  const [currentInternalId, setCurrentInternalId] = useState(
-    () => videoLibrary.find((item) => item.type === "internal")?.id ?? null,
-  )
-  const [currentExternalId, setCurrentExternalId] = useState(null)
-  const videoRef = useRef(null)
-  const playerRegionRef = useRef(null)
-
-  const filteredVideos = useMemo(() => {
-    return videoLibrary.filter((video) => isVideoMatched(video, activeFilter))
-  }, [activeFilter])
-
-  const currentInternal = useMemo(() => {
-    if (!currentInternalId) return null
-    return videoLibrary.find((video) => video.id === currentInternalId && video.type === "internal") ?? null
-  }, [currentInternalId])
-
-  const currentExternal = useMemo(() => {
-    if (!currentExternalId) return null
-    return videoLibrary.find((video) => video.id === currentExternalId && video.type === "external") ?? null
-  }, [currentExternalId])
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video || !currentInternal) return
-    video.pause()
-    video.load()
-    const playPromise = video.play()
-    if (playPromise && typeof playPromise.then === "function") {
-      playPromise.catch(() => {})
-    }
-  }, [currentInternal])
-
-  const handleFilterChange = (filterId) => {
-    setActiveFilter(filterId)
-  }
-
-  const handlePlay = (video) => {
-    if (video.type === "internal") {
-      setCurrentInternalId(video.id)
-    } else {
-      setCurrentExternalId(video.id)
-    }
-    if (playerRegionRef.current) {
-      playerRegionRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
-  }
-
   return (
     <section
-      className="relative mx-auto w-[min(1180px,92vw)] space-y-12 px-0 py-16"
+      className="relative w-full space-y-16 overflow-hidden bg-gradient-to-b from-white via-white to-slate-50 px-4 py-16 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 sm:px-8 lg:px-16"
       data-track-view="page_teach"
       aria-labelledby="teach-page-heading"
     >
-      <div className="space-y-4 text-left">
-        <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-slate-600 dark:border-white/15 dark:bg-white/10 dark:text-white/70">
+      <div className="relative mx-auto max-w-5xl space-y-6 text-left">
+        <div className="absolute inset-x-0 -top-16 -z-10 h-48 bg-gradient-to-r from-[#1f6feb]/20 via-[#21a1f1]/15 to-[#0ea5e9]/20 blur-3xl" aria-hidden="true" />
+        <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/60 bg-white/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-slate-600 shadow-sm dark:border-white/10 dark:bg-white/10 dark:text-white/70">
           <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#21A1F1]" />
-          Learn
+          Teach
         </span>
-        <h1 id="teach-page-heading" className="text-3xl font-bold text-slate-900 dark:text-white">
-          <span className="relative inline-flex items-center gap-3 overflow-hidden rounded-[28px] px-6 py-3 text-white shadow-[0_18px_44px_rgba(33,161,241,0.35)]">
+        <h1 id="teach-page-heading" className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <span className="relative inline-flex items-center gap-3 overflow-hidden rounded-[30px] px-7 py-4 text-white shadow-[0_22px_60px_rgba(33,161,241,0.38)]">
             <span className="absolute inset-0 bg-gradient-to-r from-[#1f6feb] via-[#21a1f1] to-[#0ea5e9]" aria-hidden="true" />
             <span className="absolute inset-0 blur-xl bg-[#1f6feb]/45" aria-hidden="true" />
             <span
               aria-hidden="true"
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-white/35 bg-white/15 text-lg"
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/35 bg-white/15 text-lg"
             >
               ✦
             </span>
-            <span className="relative text-2xl font-semibold tracking-wide">金融教学 · 课程中心</span>
+            <span className="relative text-3xl font-semibold">金融教学 · 全景学习中心</span>
           </span>
         </h1>
-        <p className="max-w-3xl text-base leading-relaxed text-slate-600/90 dark:text-white/70">
-          为不同经验层次的投资者准备的分层课程，覆盖从资产配置、估值方法到宏观研究与风险管理的关键主题。选择分类即可筛选对应视频内容。
+        <p className="max-w-3xl text-base leading-relaxed text-slate-600/95 dark:text-white/70">
+          针对不同阶段投资者，我们将课程内容划分为四大板块：从新手上路的保姆级操作指南，到金融知识库的系统梳理，再到投资大师的智慧与深度投研资源。全部内容支持图文、视频、信息图多元形式呈现。
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3" role="group" aria-label="课程分类筛选">
-        {filterOptions.map((option) => {
-          const isActive = option.id === activeFilter
-          return (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => handleFilterChange(option.id)}
-              className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 ${
-                isActive
-                  ? "bg-gradient-to-r from-[#61DAFB] to-[#21A1F1] text-slate-950 shadow-[0_12px_32px_rgba(33,161,241,0.35)]"
-                  : "bg-white/70 text-slate-700 hover:bg-white/85 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15"
-              }`}
-              aria-pressed={isActive}
-              data-track="teach_filter"
-              data-track-action="click"
-              data-track-label={option.label}
-            >
-              <span>{option.label}</span>
-              {isActive && <span className="text-xs font-medium text-slate-900/80 dark:text-white/80">已选</span>}
-            </button>
-          )
-        })}
-      </div>
-
-      <div
-        ref={playerRegionRef}
-        className="grid gap-6 rounded-[28px] border border-slate-200/60 bg-white/75 p-8 shadow-[0_24px_60px_rgba(6,10,32,0.38)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5 lg:grid-cols-2"
-        aria-label="课程播放器区域"
-      >
-        <div className="space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-slate-500/80 dark:text-white/50">站内课程</p>
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-                {currentInternal ? currentInternal.title : "选择一门课程开始学习"}
-              </h2>
-            </div>
-            {currentInternal && (
-              <span className="inline-flex items-center rounded-full bg-slate-900/10 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-white/10 dark:text-white/80">
-                {currentInternal.duration}
-              </span>
-            )}
-          </div>
-          <video
-            ref={videoRef}
-            key={currentInternal?.id ?? "placeholder"}
-            controls
-            className="w-full rounded-2xl border border-slate-200/60 bg-black shadow-[0_12px_32px_rgba(6,10,32,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
-            poster={currentInternal?.poster}
-            preload="metadata"
-            aria-label={currentInternal ? `金融教学站内课程：${currentInternal.title}` : "请选择站内课程播放"}
+      <div className="relative mx-auto grid w-full gap-12 lg:gap-16">
+        {boards.map((board) => (
+          <article
+            key={board.id}
+            className="relative overflow-hidden rounded-[36px] border border-slate-200/60 bg-white/80 p-8 shadow-[0_24px_70px_rgba(15,23,42,0.15)] backdrop-blur dark:border-white/10 dark:bg-white/5 sm:p-10"
           >
-            {currentInternal ? (
-              <>
-                <source src={currentInternal.sources.mp4} type="video/mp4" />
-                <source src={currentInternal.sources.webm} type="video/webm" />
-                {currentInternal.captions && (
-                  <track kind="subtitles" src={currentInternal.captions} srcLang="zh" label="中文字幕" default />
-                )}
-              </>
-            ) : (
-              <p>请选择课程后开始播放。</p>
-            )}
-          </video>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-slate-500/80 dark:text-white/50">外部课堂</p>
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-                {currentExternal ? currentExternal.title : "选择外部课程在此播放"}
-              </h2>
-            </div>
-            {currentExternal && (
-              <span className="inline-flex items-center rounded-full bg-slate-900/10 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-white/10 dark:text-white/80">
-                {badgeLabel(currentExternal)} · {currentExternal.duration}
-              </span>
-            )}
-          </div>
-          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-slate-200/60 bg-slate-900/80 shadow-[0_12px_32px_rgba(6,10,32,0.4)] dark:border-white/10">
-            {currentExternal ? (
-              <iframe
-                key={currentExternal.embedUrl}
-                src={currentExternal.embedUrl}
-                title={`${currentExternal.title} 播放`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                loading="lazy"
-                className="h-full w-full"
-              />
-            ) : (
-              <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-center text-sm text-white/70">
-                <span className="text-lg font-semibold text-white/80">选择外部课程，播放器将在此显示</span>
-                <span>支持 YouTube / Bilibili / 腾讯课堂等平台嵌入播放。</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-6" aria-live="polite">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white">视频课程列表</h2>
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredVideos.map((video) => {
-            const isActive =
-              (video.type === "internal" && video.id === currentInternalId) ||
-              (video.type === "external" && video.id === currentExternalId)
-            return (
-              <button
-                key={video.id}
-                type="button"
-                onClick={() => handlePlay(video)}
-                className={`group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200/60 bg-white/80 text-left shadow-[0_18px_40px_rgba(6,10,32,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(6,10,32,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2 dark:border-white/10 dark:bg-white/10 ${
-                  isActive ? "ring-2 ring-[#61DAFB] ring-offset-2 ring-offset-slate-100 dark:ring-offset-[#0b1226]" : ""
-                }`}
-                aria-pressed={isActive}
-                data-track="teach_play"
-                data-track-action="click"
-                data-track-label={video.title}
-              >
-                <div className="relative aspect-video w-full overflow-hidden">
-                  <img
-                    src={video.thumbnail}
-                    alt="课程预览封面"
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                  <span className="absolute left-4 top-4 inline-flex items-center rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
-                    {badgeLabel(video)}
-                  </span>
-                  <span className="absolute right-4 bottom-4 inline-flex items-center rounded-full bg-black/50 px-2.5 py-1 text-xs font-medium text-white/80 backdrop-blur">
-                    {video.duration}
-                  </span>
+            <div
+              className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${board.accent.bg}`}
+              aria-hidden="true"
+            />
+            <div className="relative space-y-10">
+              <header className="space-y-4">
+                <div className="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600 shadow-sm backdrop-blur dark:bg-white/10 dark:text-white/60">
+                  <span className="text-slate-900 dark:text-white">{board.tagline}</span>
                 </div>
-                <div className="flex flex-1 flex-col gap-3 p-5">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-slate-900 transition-colors duration-200 group-hover:text-[#21A1F1] dark:text-white dark:group-hover:text-[#7cc7ff]">
-                      {video.title}
-                    </h3>
-                    <p className="text-sm leading-relaxed text-slate-600/90 dark:text-white/70">{video.description}</p>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{board.title}</h2>
+                    <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600/95 dark:text-white/70">
+                      {board.description}
+                    </p>
                   </div>
-                  <div className="mt-auto flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-white/60">
-                    {video.categories.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center rounded-full bg-slate-900/5 px-2.5 py-1 dark:bg-white/10"
-                      >
-                        #{filterOptions.find((option) => option.id === tag)?.label || tag}
+                </div>
+              </header>
+
+              <div className="grid gap-8 lg:grid-cols-2">
+                {board.items.map((item) => (
+                  <div
+                    key={item.title}
+                    className={`relative flex h-full flex-col gap-4 rounded-3xl border border-white/40 bg-white/85 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.15)] backdrop-blur dark:border-white/10 dark:bg-white/10 ${
+                      item.badge ? "ring-2 " + board.accent.ring + " ring-offset-2 ring-offset-white/80 dark:ring-offset-slate-950" : ""
+                    }`}
+                  >
+                    {item.badge && (
+                      <span className="inline-flex w-fit items-center rounded-full bg-gradient-to-r from-[#f97316]/90 via-[#facc15]/80 to-[#f97316]/90 px-3 py-1 text-xs font-semibold text-slate-900 shadow-sm">
+                        {item.badge}
                       </span>
-                    ))}
+                    )}
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{item.title}</h3>
+                      <p className="text-sm leading-relaxed text-slate-600/95 dark:text-white/70">{item.summary}</p>
+                    </div>
+                    {item.highlights && <HighlightList highlights={item.highlights} />}
+                    {item.blocks && (
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {item.blocks.map((block) => (
+                          <ContentBlock key={block.heading} heading={block.heading} details={block.details} />
+                        ))}
+                      </div>
+                    )}
+                    {item.formats && (
+                      <div className="flex flex-wrap items-center gap-2 pt-2">
+                        {item.formats.map((format) => (
+                          <FormatBadge key={format} label={format} />
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              </button>
-            )
-          })}
-          {filteredVideos.length === 0 && (
-            <p className="col-span-full rounded-2xl border border-dashed border-slate-300/60 bg-white/60 p-10 text-center text-sm text-slate-500 dark:border-white/20 dark:bg-white/5 dark:text-white/60">
-              暂无此分类的课程，敬请期待新的教学内容。
-            </p>
-          )}
-        </div>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   )
