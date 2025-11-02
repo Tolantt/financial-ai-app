@@ -1,72 +1,69 @@
 import React from "react"
 
+const metrics = [
+  { value: "12ms", label: "对话平均延迟" },
+  { value: "7×24h", label: "全球市场覆盖" },
+  { value: "AES-256", label: "全链路加密" },
+]
+
 export default function Hero() {
   return (
-    <section
-      className="relative mt-10 w-full px-4 md:px-6 lg:px-10 xl:px-16"
-      data-track-view="hero"
-    >
-      <div className="relative overflow-hidden rounded-[34px] border border-white/15 bg-white/80 px-6 py-16 text-slate-900 shadow-[0_32px_80px_rgba(6,10,28,0.55)] backdrop-blur-3xl transition-colors duration-500 dark:border-white/10 dark:bg-white/5 dark:text-white">
-        <div className="hero-gradient" aria-hidden="true" />
-        <div className="hero-orb hero-orb--left" aria-hidden="true" />
-        <div className="hero-orb hero-orb--right" aria-hidden="true" />
-        <div className="hero-grid" aria-hidden="true" />
+    <section className="hero" data-track-view="hero">
+      <div className="hero__inner">
+        <div className="hero__headline">
+          <span className="hero__eyebrow" aria-hidden="true">
+            金融智能工作室
+          </span>
+          <h1 className="hero__title">
+            用 <span>Anxurs</span> 在一个极简界面里完成洞察、策略与执行。
+          </h1>
+          <p className="hero__description">
+            借助原生 Apple 风格的体验，我们将金融 AI 助手、量化回测与协同知识库组合在一起，帮助你以最自然的方式提问、洞察和行动。
+          </p>
+          <div className="hero__actions">
+            <a
+              href="#assistant"
+              className="button button--primary"
+              data-track="cta"
+              data-track-action="click"
+              data-track-label="hero_try_ai"
+            >
+              立即体验
+            </a>
+            <a
+              href="#markets"
+              className="button button--ghost"
+              data-track="cta"
+              data-track-action="click"
+              data-track-label="hero_view_guide"
+            >
+              浏览功能
+            </a>
+          </div>
+        </div>
 
-        <div className="relative grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div className="space-y-6 text-left">
-            <p className="inline-flex items-center gap-2 rounded-full border border-slate-300/60 bg-white/60 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-slate-700/80 dark:border-white/15 dark:bg-white/5 dark:text-white/70">
-              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#61DAFB]" />
-              智能投研 · 个性服务
+        <div className="hero__media" data-track-view="hero_media">
+          <div className="hero-panel">
+            <p className="hero-panel__title">自然语言 · 专业回答</p>
+            <p className="hero-panel__description">
+              从研报摘要到估值校验，只需一句话即可获得结构化洞见、图表与下一步建议。
             </p>
-            <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-              欢迎来到 Anxurs
-            </h1>
-            <p className="max-w-[72ch] text-base leading-relaxed text-slate-700/85 sm:text-lg dark:text-white/80">
-              Anxurs 通过前沿 AI 技术，提供
-              <strong className="mx-1 font-semibold text-slate-900 dark:text-white"> 金融AI </strong>
-              助手、
-              <strong className="mx-1 font-semibold text-slate-900 dark:text-white"> 量化策略 </strong>
-              回测与
-              <strong className="mx-1 font-semibold text-slate-900 dark:text-white"> 投研 </strong>
-              摘要与学习路径，帮助你
-              <span className="ml-1 font-semibold text-slate-900 dark:text-white"> 更聪明地投资，更稳健地增长</span>。
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="#assistant"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#61DAFB] to-[#21A1F1] px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_18px_40px_rgba(33,161,241,0.45)] transition-all duration-200 hover:-translate-y-[1px] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
-                data-track="cta"
-                data-track-action="click"
-                data-track-label="hero_try_ai"
-              >
-                立即试用 AI 助手
-              </a>
-              <a
-                href="#guide"
-                className="ghost-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-200 hover:-translate-y-[1px] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
-                data-track="cta"
-                data-track-action="click"
-                data-track-label="hero_view_guide"
-              >
-                查看投资攻略
-              </a>
-            </div>
           </div>
 
-          <div className="relative isolate w-full rounded-[28px] border border-slate-200/60 bg-white/70 p-6 text-slate-700 shadow-[0_20px_55px_rgba(6,10,32,0.5)] backdrop-blur-3xl dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-            <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:border-white/20 dark:bg-white/10 dark:text-white/70">
-              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#61DAFB]" />
-              Demo
-            </span>
-            <div className="mt-12 space-y-4 text-sm leading-relaxed">
-              <p className="font-semibold text-slate-900 dark:text-white">
-                此处可嵌入 AI 对话/策略回测预览图或视频
-              </p>
-              <p className="text-slate-700/85 dark:text-white/70">
-                使用玻璃拟态卡片承载产品展示，配合动态渐变背景营造沉浸式金融科技氛围。
-              </p>
-            </div>
-            <div className="pointer-events-none absolute inset-x-6 bottom-6 h-28 rounded-full bg-gradient-to-r from-[#61DAFB]/15 via-transparent to-[#21A1F1]/20 blur-3xl" aria-hidden="true" />
+          <div className="hero-metrics" aria-label="平台亮点指标">
+            {metrics.map((metric) => (
+              <div key={metric.label} className="hero-metric">
+                <span className="hero-metric__value">{metric.value}</span>
+                <span className="hero-metric__label">{metric.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="hero-panel" aria-label="跨端协同">
+            <p className="hero-panel__title">设计为 Apple 生态</p>
+            <p className="hero-panel__description">
+              无缝支持 Mac、iPad 与 iPhone，文件、备忘与市场视图在各端实时同步，保持优雅一致的操作体验。
+            </p>
           </div>
         </div>
       </div>
