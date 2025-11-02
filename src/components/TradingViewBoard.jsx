@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 /**
- * TradingView 看板（两栏布局 + 搜索）
+ * TradingView 看板
  * - 左侧：分组 Tabs + 搜索框 + 标的列表
  * - 右侧：TradingView 高级图表（随主题切换）
  * - 免后端、免 API Key；全部为官方 embed 脚本
@@ -11,7 +11,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
  *   - 列表项: data-track="tv_symbol" data-track-label="<符号>"
  *   - 搜索提交: data-track="tv_search" data-track-label="<输入值>"
  */
-
 const GROUPS = [
   {
     key: "us-index",
@@ -131,7 +130,6 @@ export default function TradingViewBoard() {
   const [query, setQuery] = useState("");
   const chartRef = useRef(null);
 
-  // 监听主题变化（<html> class: dark）
   useEffect(() => {
     const html = document.documentElement;
     const obs = new MutationObserver(() => setTheme(getTheme()));
@@ -139,38 +137,30 @@ export default function TradingViewBoard() {
     return () => obs.disconnect();
   }, []);
 
-  // 当切换分组时，把右侧图表切到该分组第一只
   useEffect(() => {
-    const g = GROUPS.find((x) => x.key === activeGroup);
-    if (g && g.items.length > 0) {
-      setSymbol(g.items[0].sym);
+    const group = GROUPS.find((item) => item.key === activeGroup);
+    if (group && group.items.length > 0) {
+      setSymbol(group.items[0].sym);
     }
   }, [activeGroup]);
 
-  const config = useMemo(
-    () => buildAdvancedChartConfig(symbol, theme),
-    [symbol, theme]
-  );
+  const config = useMemo(() => buildAdvancedChartConfig(symbol, theme), [symbol, theme]);
 
-  // 注入 / 重建高级图表
   useEffect(() => {
     const host = chartRef.current;
     if (!host) return;
-    // 清空容器
     while (host.firstChild) host.removeChild(host.firstChild);
 
     const script = document.createElement("script");
-    script.src =
-      "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.async = true;
     script.id = "tradingview-advanced-chart";
     script.innerHTML = JSON.stringify(config);
     host.appendChild(script);
   }, [config]);
 
-  // 搜索：支持中文/英文名称或代码（带不带交易所前缀都行）
-  function onSearch(e) {
-    e.preventDefault();
+  function onSearch(event) {
+    event.preventDefault();
     const raw = query.trim();
     if (!raw) return;
 
@@ -178,16 +168,13 @@ export default function TradingViewBoard() {
     let resolved = NAME_MAP.get(key);
 
     if (!resolved) {
-      // 如果输入带 “EXCHANGE:SYMBOL” 直接使用；否则按英文代码尝试
       if (raw.includes(":")) {
         resolved = raw.toUpperCase();
       } else {
-        // 默认按美股代码猜测（无前缀），TradingView 也能解析常见符号
         resolved = raw.toUpperCase();
       }
     }
 
-    // 埋点（搜索）
     try {
       const payload = {
         event: "tv_search",
@@ -206,111 +193,94 @@ export default function TradingViewBoard() {
     setSymbol(resolved);
   }
 
-  const currentList =
-    GROUPS.find((g) => g.key === activeGroup)?.items ?? GROUPS[0].items;
+  const currentList = GROUPS.find((g) => g.key === activeGroup)?.items ?? GROUPS[0].items;
 
   return (
-    <section
-      className="w-full py-8"
-      aria-label="市场总览与图表"
-      data-track-view="tv_board"
-    >
-      <div className="px-4 md:px-6 lg:px-10 xl:px-16">
-        <h2 className="text-2xl font-semibold mb-3">Market summary</h2>
-      </div>
+    <section className="section" id="markets" aria-label="市场总览与图表" data-track-view="tv_board">
+      <div className="section__inner">
+        <header className="section-heading">
+          <span className="section-heading__eyebrow" aria-hidden="true">
+            实时市场
+          </span>
+          <h2 className="section-heading__title">在一个界面浏览全球市场</h2>
+          <p className="section-heading__description">
+            Anxurs 将 TradingView 高级图表与精选资产集合整合，帮助你以 Apple 式的简洁界面快速切换指数、个股和加密资产。
+          </p>
+        </header>
 
-      {/* 两栏布局 */}
-      <div className="grid lg:grid-cols-12 gap-4 px-2 md:px-4 lg:px-6 xl:px-10">
-        {/* 左侧：分组 + 搜索 + 列表 */}
-        <aside className="lg:col-span-4 xl:col-span-3 rounded-xl border border-black/10 dark:border-white/10 p-3 bg-white/60 dark:bg-white/5">
-          {/* Tabs */}
-          <div className="flex gap-2 overflow-x-auto no-scrollbar mb-3">
-            {GROUPS.map((g) => {
-              const active = g.key === activeGroup;
-              return (
-                <button
-                  key={g.key}
-                  type="button"
-                  className={[
-                    "shrink-0 px-3 py-2 rounded-lg border transition focus:outline-none",
-                    "focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2",
-                    active
-                      ? "bg-[#61dafb] text-black border-transparent"
-                      : "border-black/10 dark:border-white/15 hover:bg-white/10",
-                  ].join(" ")}
-                  aria-pressed={active}
-                  onClick={() => setActiveGroup(g.key)}
-                  data-track="tv_tab"
-                  data-track-action="click"
-                  data-track-label={g.label}
-                >
-                  {g.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* 搜索框 */}
-          <form className="flex gap-2 mb-3" onSubmit={onSearch} aria-label="搜索股票或代码">
-            <input
-              className="flex-1 rounded-lg border border-black/10 dark:border-white/15 bg-transparent px-3 py-2"
-              placeholder="搜索：AAPL / 苹果 / BINANCE:BTCUSDT"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="输入股票名称或代码"
-            />
-            <button
-              type="submit"
-              className="rounded-lg bg-[#61dafb] text-black font-semibold px-3 py-2
-                         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2"
-              data-track="tv_search"
-              data-track-action="click"
-              data-track-label="search_submit"
-            >
-              搜索
-            </button>
-          </form>
-
-          {/* 列表 */}
-          <ul className="flex flex-col gap-2">
-            {currentList.map((it) => {
-              const isActive = it.sym === symbol;
-              return (
-                <li key={it.sym}>
+        <div className="showcase">
+          <aside className="showcase__panel">
+            <h3>精选资产</h3>
+            <div className="showcase__tabs">
+              {GROUPS.map((group) => {
+                const active = group.key === activeGroup;
+                return (
                   <button
+                    key={group.key}
                     type="button"
-                    onClick={() => setSymbol(it.sym)}
-                    className={[
-                      "w-full text-left px-3 py-2 rounded-lg border transition",
-                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7cc7ff] focus-visible:ring-offset-2",
-                      isActive
-                        ? "bg-[#61dafb] text-black border-transparent"
-                        : "border-black/10 dark:border-white/15 hover:bg-white/10",
-                    ].join(" ")}
-                    data-track="tv_symbol"
+                    className={`tab-button ${active ? "is-active" : ""}`}
+                    aria-pressed={active}
+                    onClick={() => setActiveGroup(group.key)}
+                    data-track="tv_tab"
                     data-track-action="click"
-                    data-track-label={it.sym}
-                    aria-current={isActive ? "true" : undefined}
+                    data-track-label={group.label}
                   >
-                    <div className="font-semibold">{it.sym}</div>
-                    <div className="text-xs opacity-70">{it.name}</div>
+                    {group.label}
                   </button>
-                </li>
-              );
-            })}
-          </ul>
-        </aside>
+                );
+              })}
+            </div>
 
-        {/* 右侧：TradingView 高级图表 */}
-        <div
-          className="lg:col-span-8 xl:col-span-9 rounded-xl border border-black/10 dark:border-white/10 p-2
-                     bg-white/60 dark:bg-white/5 min-h-[420px]"
-        >
-          <div
-            key={symbol + theme /* 强制重建容器可选 */}
-            ref={chartRef}
-            className="w-full h-[65vh] min-h-[420px]"
-          />
+            <form className="search-box" onSubmit={onSearch} aria-label="搜索股票或代码">
+              <input
+                className="search-input"
+                placeholder="搜索：AAPL / 苹果 / BINANCE:BTCUSDT"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                aria-label="输入股票名称或代码"
+              />
+              <button
+                type="submit"
+                className="button button--ghost button--slim"
+                data-track="tv_search"
+                data-track-action="click"
+                data-track-label="search_submit"
+              >
+                搜索
+              </button>
+            </form>
+
+            <ul className="symbol-list">
+              {currentList.map((item) => {
+                const isActive = item.sym === symbol;
+                return (
+                  <li key={item.sym}>
+                    <button
+                      type="button"
+                      className={`symbol-item ${isActive ? "is-active" : ""}`}
+                      onClick={() => setSymbol(item.sym)}
+                      data-track="tv_symbol"
+                      data-track-action="click"
+                      data-track-label={item.sym}
+                      aria-pressed={isActive}
+                    >
+                      <div>
+                        <span className="symbol-item__name">{item.name}</span>
+                        <span className="symbol-item__code">{item.sym}</span>
+                      </div>
+                      <span aria-hidden="true">→</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </aside>
+
+          <div className="showcase__chart" data-track-view="tv_chart">
+            <div className="tradingview-widget-container" key={`${symbol}-${theme}`}>
+              <div ref={chartRef} className="tradingview-widget-container__widget" />
+            </div>
+          </div>
         </div>
       </div>
     </section>
