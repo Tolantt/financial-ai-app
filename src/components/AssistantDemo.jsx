@@ -9,7 +9,12 @@ export default function AssistantDemo() {
   const logRef = useRef(null)
 
   useEffect(() => {
-    logRef.current?.lastElementChild?.scrollIntoView({ behavior: "smooth" })
+    if (!logRef.current) return
+
+    logRef.current.scrollTo({
+      top: logRef.current.scrollHeight,
+      behavior: "smooth",
+    })
   }, [logs])
 
   const onSubmit = (event) => {
