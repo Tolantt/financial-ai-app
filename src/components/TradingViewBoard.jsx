@@ -12,52 +12,49 @@ const GROUPS = [
     label: "市场追踪",
     items: [
       {
-        sym: "DJ:DJI",
-        name: "道琼斯工业指数",
-        icon: "dow",
-        price: "38,178.12",
-        change: 0.62,
-        trend: [72, 74, 71, 75, 78, 80, 83, 82, 84, 86, 90, 92],
+        sym: "AMEX:SPY",
+        ticker: "SPY",
+        name: "标普500 ETF",
+        icon: "spy",
+        price: "$522.18",
+        change: 0.63,
+        trend: [48, 49, 50, 51, 53, 56, 58, 59, 61, 62, 64, 66],
       },
       {
-        sym: "NASDAQ:NDX",
-        name: "纳斯达克100指数",
-        icon: "nasdaq",
-        price: "18,012.45",
-        change: 1.14,
-        trend: [55, 58, 57, 60, 63, 68, 70, 73, 74, 76, 79, 82],
+        sym: "NASDAQ:QQQ",
+        ticker: "QQQ",
+        name: "纳指100 ETF",
+        icon: "qqq",
+        price: "$449.67",
+        change: 0.84,
+        trend: [42, 44, 45, 47, 49, 52, 54, 56, 58, 60, 61, 63],
       },
       {
-        sym: "SPCFD:SPX",
-        name: "标普500指数",
-        icon: "spx",
-        price: "5,190.84",
-        change: 0.78,
-        trend: [68, 69, 67, 70, 71, 73, 75, 78, 79, 81, 83, 85],
+        sym: "AMEX:IWM",
+        ticker: "IWM",
+        name: "罗素2000 ETF",
+        icon: "iwm",
+        price: "$205.61",
+        change: 0.27,
+        trend: [36, 37, 38, 40, 41, 43, 44, 45, 46, 47, 48, 49],
       },
       {
-        sym: "TVC:GOLD",
-        name: "现货黄金",
-        icon: "gold",
-        price: "2,352.10",
-        change: -0.37,
-        trend: [88, 86, 87, 89, 90, 91, 93, 94, 92, 90, 89, 88],
+        sym: "NASDAQ:TSLA",
+        ticker: "TSLA",
+        name: "特斯拉",
+        icon: "tesla",
+        price: "$176.45",
+        change: -0.91,
+        trend: [58, 57, 56, 55, 54, 53, 52, 51, 52, 53, 54, 55],
       },
       {
-        sym: "TVC:DXY",
-        name: "美元指数",
-        icon: "dxy",
-        price: "104.18",
-        change: 0.28,
-        trend: [42, 43, 45, 44, 46, 48, 50, 49, 47, 48, 50, 52],
-      },
-      {
-        sym: "TVC:USOIL",
-        name: "WTI 原油",
-        icon: "oil",
-        price: "78.64",
-        change: -0.45,
-        trend: [52, 53, 55, 58, 56, 54, 52, 50, 49, 51, 52, 53],
+        sym: "BINANCE:BTCUSDT",
+        ticker: "BTC",
+        name: "比特币 / USDT",
+        icon: "btc",
+        price: "$67,845",
+        change: 1.32,
+        trend: [32, 34, 36, 38, 41, 44, 46, 48, 50, 53, 55, 57],
       },
     ],
   },
@@ -342,6 +339,7 @@ const ICON_PRESETS = {
   cl: { colors: ["#4B79A1", "#283E51"], glyph: "CL" },
   spy: { colors: ["#1D976C", "#93F9B9"], glyph: "SP" },
   qqq: { colors: ["#5433FF", "#20BDFF"], glyph: "QQ" },
+  iwm: { colors: ["#FF9A9E", "#FECFEF"], glyph: "IW" },
   xlk: { colors: ["#396AFC", "#2948FF"], glyph: "XL" },
   iemg: { colors: ["#833AB4", "#FD1D1D"], glyph: "EM" },
   arkk: { colors: ["#8A2387", "#E94057"], glyph: "AR" },
@@ -362,6 +360,7 @@ function createNameMap() {
     items.forEach((item) => {
       append(item.name, item.sym)
       append(item.sym, item.sym)
+      if (item.ticker) append(item.ticker, item.sym)
       const [, code] = item.sym.split(":")
       append(code, item.sym)
     })
@@ -406,6 +405,7 @@ function createNameMap() {
     ["cl", "NYMEX:CL1!"],
     ["spy", "AMEX:SPY"],
     ["qqq", "NASDAQ:QQQ"],
+    ["iwm", "AMEX:IWM"],
     ["xlk", "AMEX:XLK"],
     ["iemg", "AMEX:IEMG"],
     ["arkk", "AMEX:ARKK"],
@@ -417,6 +417,29 @@ function createNameMap() {
 }
 
 const NAME_MAP = createNameMap()
+const SYMBOL_MAP = createSymbolMap()
+
+function createSymbolMap() {
+  const map = new Map()
+
+  const registerItems = (items) => {
+    items.forEach((item) => {
+      if (!map.has(item.sym)) {
+        map.set(item.sym, item)
+      }
+    })
+  }
+
+  GROUPS.forEach((group) => {
+    if (group.subGroups) {
+      group.subGroups.forEach((sub) => registerItems(sub.items))
+    } else {
+      registerItems(group.items)
+    }
+  })
+
+  return map
+}
 
 function getTheme() {
   return document.documentElement.classList.contains("dark") ? "dark" : "light"
@@ -565,6 +588,20 @@ export default function TradingViewBoard() {
   }, [currentList])
 
   const config = useMemo(() => buildAdvancedChartConfig(symbol, theme), [symbol, theme])
+  const activeAsset = useMemo(() => SYMBOL_MAP.get(symbol) ?? null, [symbol])
+  const chartTicker = useMemo(() => {
+    if (activeAsset?.ticker) return activeAsset.ticker
+    const [, code] = symbol.split(":")
+    return code ?? symbol
+  }, [activeAsset, symbol])
+  const chartName = activeAsset?.name ?? chartTicker
+  const chartPrice = activeAsset?.price ?? "—"
+  const chartChange = useMemo(() => {
+    if (!activeAsset) return null
+    const value = activeAsset.change ?? 0
+    const prefix = value >= 0 ? "+" : ""
+    return `${prefix}${value.toFixed(2)}%`
+  }, [activeAsset])
 
   useEffect(() => {
     const host = chartRef.current
@@ -685,6 +722,7 @@ export default function TradingViewBoard() {
                 const isActive = item.sym === symbol
                 const positive = item.change >= 0
                 const changeText = `${positive ? "+" : ""}${item.change.toFixed(2)}%`
+                const displayTicker = item.ticker ?? item.sym.split(":").pop() ?? item.sym
 
                 return (
                   <li key={item.sym}>
@@ -700,8 +738,8 @@ export default function TradingViewBoard() {
                       <div className="asset-card__primary">
                         <AssetIcon preset={item.icon} name={item.name} />
                         <div className="asset-card__meta">
+                          <span className="asset-card__ticker">{displayTicker}</span>
                           <span className="asset-card__name">{item.name}</span>
-                          <span className="asset-card__code">{item.sym}</span>
                         </div>
                       </div>
 
@@ -721,8 +759,25 @@ export default function TradingViewBoard() {
           </aside>
 
           <div className="showcase__chart" data-track-view="tv_chart">
-            <div className="tradingview-widget-container" key={`${symbol}-${theme}`}>
-              <div ref={chartRef} className="tradingview-widget-container__widget" />
+            <header className="showcase__chart-header">
+              <div className="chart-header__meta">
+                <span className="chart-header__ticker">{chartTicker}</span>
+                <span className="chart-header__name">{chartName}</span>
+              </div>
+              <div className="chart-header__quote">
+                <span className="chart-header__price">{chartPrice}</span>
+                {chartChange && (
+                  <span className={`chart-header__change ${chartChange.startsWith("+") ? "is-up" : "is-down"}`}>
+                    {chartChange}
+                  </span>
+                )}
+              </div>
+            </header>
+
+            <div className="showcase__chart-body">
+              <div className="tradingview-widget-container" key={`${symbol}-${theme}`}>
+                <div ref={chartRef} className="tradingview-widget-container__widget" />
+              </div>
             </div>
           </div>
         </div>
